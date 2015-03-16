@@ -1,10 +1,5 @@
 {	
-	"comment" : ["removed some rules:", "RewriteParentheticals", "DeleteLongTerm"],
-	"rules" : [ 
-		"RewriteShortFormLongForm", "DeleteIfContainsDosage", "DeleteIfContainsAtSign", "DeleteIfContainsECNumber",
-	 	"DeleteIfContainsClassification", "DeleteIfContainsUnderspecification", "DeleteIfContainsMisc", "DeleteShortToken", 
-	 	"RewriteSemanticType", "RewriteSyntacticInversion", "RewriteAngularBrackets"
-	 ],
+"rules" : ["DeleteIfContainsDosage", "DeleteIfContainsAtSign", "DeleteIfContainsECNumber", "DeleteIfContainsResidual", "DeleteShortToken", "RewriteSemanticType", "RewriteSyntacticInversion", "RewriteShortFormLongForm", "DeleteIfContainsDosage", "DeleteIfContainsAtSign", "DeleteIfContainsECNumber", "DeleteIfContainsResidual", "DeleteShortToken"],
 	"ruleParameters":{
 		"DeleteIfContainsResidual" : {
 			"pattern" : ["(?i)sin clasificar", "(?i)no clasificad[oa](s | )", "(?i)sin mención", "NCOC", "(?i)no especificad[oa](s | )", "(?i)sin especificar", "(?i)indeterminad[oa](s | )", "(?i)desconocid[oa](s | )", "(?i)obsolet[oa](s | )", "(?i)^no ", "(?i)misceláne[oa](s | )", "(?i)^otr[oa](s | )"]
@@ -18,6 +13,7 @@
 		},
 	 	"RewriteSyntacticInversion" : {
 	 	 	"compound" : ["false"]
-	 	}
+	 	},
+	 	"DeleteIfContainsDosage" : { "day" : ["day", "dias"] }
 	}
 }

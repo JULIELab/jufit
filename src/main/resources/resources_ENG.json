@@ -1,13 +1,8 @@
 {	
-	"comment" : ["removed some rules:", "RewriteParentheticals", "DeleteLongTerm"],
-	"rules" : [ 
-		"RewriteShortFormLongForm", "DeleteIfContainsDosage", "DeleteIfContainsAtSign", "DeleteIfContainsECNumber",
-	 	"DeleteIfContainsClassification", "DeleteIfContainsUnderspecification", "DeleteIfContainsMisc", "DeleteShortToken", 
-	 	"RewriteSemanticType", "RewriteSyntacticInversion",  "RewriteApostropheS", "RewriteAngularBrackets"
-	 ],
+"rules" : ["DeleteIfContainsDosage", "DeleteIfContainsAtSign", "DeleteIfContainsECNumber", "DeleteIfContainsResidual", "DeleteShortToken", "RewriteSemanticType", "RewriteSyntacticInversion", "RewriteShortFormLongForm", "RewriteApostropheS", "DeleteIfContainsDosage", "DeleteIfContainsAtSign", "DeleteIfContainsECNumber", "DeleteIfContainsResidual", "DeleteShortToken"],
 	"ruleParameters":{
 		"DeleteIfContainsResidual" : {
-			"pattern" : [",\\s*NEC$", " \\(NEC\\)$", " \\[NEC\\]$", "(?i)not elsewhere classified", "(?i)unclassified", "(i?)without mention", ",\\s*NOS$", " \\(NOS\\)$", " \\[NOS\\]$", "(?i)not otherwise specified", "(?i)not specified", "(?i)unspecified", "(?i)^other ", "(?i) other$", "(?i)^deprecated ", "(?i)^unknown ", "(?i)^obsolete ","(?i)^miscellaneous ", "(?i)^no ", ".* -RETIRED-"]
+			"pattern" : [",\\s*NEC$", " \\(NEC\\)$", " \\[NEC\\]$", "(?i)not elsewhere classified", "(?i)unclassified", "(i?)without mention", ",\\s*NOS$", " \\(NOS\\)$", " \\[NOS\\]$", "(?i)not otherwise specified", "(?i)not specified", "(?i)unspecified", "(?i)^other ", "(?i) other$", "(?i)^deprecated ", "(?i)^unknown ", "(?i)^obsolete ","(?i)^miscellaneous ", "(?i)^no ", " -RETIRED-"]
 		},
 		 "DeleteShortToken" : {
 		 	"stopWords":["a", "a's", "able", "about", "above", "according", "accordingly", "across", "actually", "after", 
@@ -60,9 +55,11 @@
 			"round" : ["Kiel Classification", "USA", "SMQ", "U.S.", "animal life circumstance", "assessment scale", "attribute", "body structure", "cell", "cell structure", "core metadata concept", "disorder", "environment", "environment / location", "ethnic group", "event", "finding", "foundation metadata concept", "geographic location", "inactive concept", "life style", "linkage concept", "link assertion", "metadata", "morphologic abnormality", "namespace concept", "navigational concept", "observable entity", "occupation", "organism", "person", "physical force", "physical object", "procedure", "product", "qualifier value", "racial group", "record artifact", "regime/therapy", "religion/philosophy", "situation", "social concept", "special concept", "specimen", "staging scale", "substance", "tumor staging", "medication", "lab test", "history", "symptom", "procedure", "treatment", "diagnosis"],
 			"square" : ["Preparations", "TC", "PK", "Dose Form", "EPC", "MoA", "PE", "Disease/Finding", "Chemical/Ingredient"],
 			"angular" : ["male", "female", "bacteria", "bird", "fly", "sponge", "fish", "katydid", "Aves", "butterfly", "wasp", "moss", "gastropod", "grasshopper", "eukaryote", "fungus", "beetle", "plant", "invertebrate", "moth", "subgenus", "genus", "angiosperm"]
+
 		},
 	 	"RewriteSyntacticInversion" : {
 	 	 	"compound" : ["false"]
-	 	 }
+	 	},
+	 	"DeleteIfContainsDosage" : { "day" : ["day"] }
 	}
 }
