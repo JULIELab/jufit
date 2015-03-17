@@ -1,18 +1,18 @@
 /**
- * This is JUF, the Jena UMLS Filter
- * Copyright (C) 2015 Johannes HellrichJULIE LAB
+ * This is JUFIT, the Jena UMLS Filter
+ * Copyright (C) 2015 JULIE LAB
  * Authors: Johannes Hellrich and Sven Buechel
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -43,35 +43,45 @@ public class Delemmatizer {
 			.matcher("");
 	private final static Matcher space = Pattern.compile("\\s").matcher("");
 	public static final String LANGUAGE_ENLGLISH = "ENG";
-
 	public static final String LANGUAGE_GERMAN = "GER";
-
 	public static final String LANGUAGE_FRENCH = "FRE";
-
 	public static final String LANGUAGE_SPANISH = "SPA";
-
 	public static final String LANGUAGE_DUTCH = "DUT";
 
 	/**
-	 * main method
+	 * Entry point from Main class, processes provided umls terms and writer
+	 * results to stdout and logging information to stderr
 	 * 
+	 * @param iterator
+	 *            Iterator over provided terms from UMLS
+	 * @param mode
+	 *            Used to select output format
+	 * @param existingTerms
+	 *            Pre-existing terms for this language may not be produced as
+	 *            new terms
+	 * @param jsonRuleFile
+	 *            Configuration file to use during processing
 	 * @param language
+	 *            Language to process, needed to select proper rules (if no
+	 *            config is provided)
+	 * @throws IOException
 	 */
 	public static void delemmatize(final Iterator<ProvidedTerm> iterator,
-			final FilterMode mode, final Set<String> lang2existingTerms,
-			final String jsonFile, final String language) throws IOException {
+			final FilterMode mode, final Set<String> existingTerms,
+			final String jsonRuleFile, final String language)
+			throws IOException {
 		final Delemmatizer d = new Delemmatizer();
 
-		if (jsonFile != null)
-			ResourceProvider.setLanguageRule(language, jsonFile);
-		Set<String> alreadyPrinted = new HashSet<>();
+		if (jsonRuleFile != null)
+			ResourceProvider.setLanguageRule(language, jsonRuleFile);
+		final Set<String> alreadyPrinted = new HashSet<>();
 
 		while (iterator.hasNext()) {
 			final ProvidedTerm providedTerm = iterator.next();
 			final TermContainer cleanedTerms = FilterMode.DO_NOTHING_PRODUCE_GAZETTEER_FILE == mode ? null
 					: d.delemmatizeTerm(providedTerm.getTerm(),
 							providedTerm.getLanguageLong(),
-							providedTerm.isChemicalOrDrug(), lang2existingTerms);
+							providedTerm.isChemicalOrDrug(), existingTerms);
 			if (FilterMode.MRCONSO == mode) {
 				for (final TermWithSource term : cleanedTerms.getRawTerms())
 					if (!term.getIsSupressed())
@@ -215,6 +225,7 @@ public class Delemmatizer {
 	 *            Drugs.
 	 * @return Returns ArrayList of terms containing delemmatized terms.
 	 */
+	@Deprecated
 	ArrayList<String> delemmatizeTermProducingUnsuppressedStrings(
 			final String s, final String language,
 			final boolean isChemicalOrDrug) throws IOException {
@@ -222,6 +233,13 @@ public class Delemmatizer {
 				.getUnsuppressedTermStrings();
 	}
 
+	/**
+	 * Loads rules specified in json configuration file
+	 * 
+	 * @param language
+	 *            language to load rules for
+	 * @throws IOException
+	 */
 	private void prepareRules(final String language) throws IOException {
 		final ArrayList<Rule> rules = new ArrayList<>();
 		for (final String rule : ResourceProvider.getRulesForLanguage(language))

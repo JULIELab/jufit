@@ -1,18 +1,18 @@
 /**
- * This is JUF, the Jena UMLS Filter
- * Copyright (C) 2015 Johannes HellrichJULIE LAB
+ * This is JUFIT, the Jena UMLS Filter
+ * Copyright (C) 2015 JULIE LAB
  * Authors: Johannes Hellrich and Sven Buechel
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -41,20 +41,23 @@ public class RewriteSyntacticInversion extends Rule {
 	private static final Joiner SPACE_JOINER = Joiner.on(" ");
 	private static final Joiner DASH_JOINER = Joiner.on("-");
 	private static final String RULENAME = "SYN";
-	private final Matcher containsDash = Pattern.compile("\\P{Z}-\\p{Z}").matcher("");
+	private final Matcher containsDash = Pattern.compile("\\P{Z}-\\p{Z}")
+			.matcher("");
 	private final Matcher upperThenLowerFirst = Pattern.compile(
 			"^(.* )*\\p{Lu}\\p{javaLowerCase}\\p{javaLowerCase}+-$")
 			.matcher("");
-	private final Matcher upperThenLowerSecond = Pattern
-			.compile(
-					"^(.* )*\\p{Lu}\\p{Ll}\\p{Ll}\\p{Ll}+$")
-					.matcher("");
+	private final Matcher upperThenLowerSecond = Pattern.compile(
+			"^(.* )*\\p{Lu}\\p{Ll}\\p{Ll}\\p{Ll}+$").matcher("");
 	private final Matcher lowerDashLower = Pattern.compile(
 			"^\\p{Ll}+-\\p{Ll}+-$").matcher("");
 	private final Matcher doubleDash = Pattern.compile("-.*-").matcher("");
 
 	private final boolean compound;
 
+	/**
+	 *
+	 * @param compound
+	 */
 	public RewriteSyntacticInversion(final boolean compound) {
 		super(RULENAME);
 		this.compound = compound;
@@ -86,7 +89,7 @@ public class RewriteSyntacticInversion extends Rule {
 						&& upperThenLowerFirst.reset(strings[0]).matches()
 						&& upperThenLowerSecond.reset(strings[1]).matches())
 					s2 = strings[0].substring(0, strings[0].length() - 1)
-					+ strings[1].toLowerCase();
+							+ strings[1].toLowerCase();
 				else if (!tws.getIsChem()
 						&& lowerDashLower.reset(strings[0]).matches()
 						&& upperThenLowerSecond.reset(strings[1]).matches()) {
@@ -94,8 +97,8 @@ public class RewriteSyntacticInversion extends Rule {
 							strings[0].length() - 1).split("-");
 					for (int i = 0; i < splits2.length; ++i)
 						splits2[i] = Character
-						.toUpperCase(splits2[i].charAt(0))
-						+ splits2[i].substring(1, splits2[i].length());
+								.toUpperCase(splits2[i].charAt(0))
+								+ splits2[i].substring(1, splits2[i].length());
 					s2 = DASH_JOINER.join(splits2) + "-" + strings[1];
 				} else
 					s2 = s2.replaceAll("- +", "-");
