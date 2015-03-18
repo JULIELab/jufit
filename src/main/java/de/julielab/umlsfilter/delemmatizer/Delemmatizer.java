@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 
 import de.julielab.provider.ProvidedTerm;
 import de.julielab.umlsfilter.config.ResourceProvider;
+import de.julielab.umlsfilter.delemmatizer.FilterMode;
 import de.julielab.umlsfilter.rules.Rule;
 import de.julielab.umlsfilter.rules.TermContainer;
 import de.julielab.umlsfilter.rules.TermWithSource;
@@ -78,33 +79,22 @@ public class Delemmatizer {
 
 		while (iterator.hasNext()) {
 			final ProvidedTerm providedTerm = iterator.next();
-			final TermContainer cleanedTerms = FilterMode.DO_NOTHING_PRODUCE_GAZETTEER_FILE == mode ? null
+			final TermContainer cleanedTerms = FilterMode.BASELINE_GAZETTEER_FILE == mode ? null
 					: d.delemmatizeTerm(providedTerm.getTerm(),
 							providedTerm.getLanguageLong(),
 							providedTerm.isChemicalOrDrug(), existingTerms);
 			if (FilterMode.MRCONSO == mode) {
 				for (final TermWithSource term : cleanedTerms.getRawTerms())
-					if (!term.getIsSupressed())
-						System.out.println(providedTerm.getUpdatedMRCONSO(term
-								.getTerm()));
-			} else if (FilterMode.SYNONYM == mode) {
-				for (final TermWithSource term : cleanedTerms.getRawTerms())
-					if (!term.getIsSupressed())
-						System.out.println(providedTerm.getCui() + "|"
-								+ term.getTerm());
-			} else if (FilterMode.SYNONYM_IF_CHANGED == mode) {
-				for (final TermWithSource term : cleanedTerms.getRawTerms())
-					if (term.getIsSupressed())
-						System.out.println(providedTerm.getTerm()
-								+ "\t|\tDELETED" + "\t|\t"
-								+ providedTerm.isChemicalOrDrug() + "\t|\t"
-								+ term.getModifiedByRulesString());
-					else if (!providedTerm.getTerm().equals(term.getTerm()))
-						System.out.println(providedTerm.getTerm() + "\t|\t"
-								+ term + "\t|\t"
-								+ providedTerm.isChemicalOrDrug() + "\t|\t"
-								+ term.getModifiedByRulesString());
-			} else if (FilterMode.DO_NOTHING_PRODUCE_GAZETTEER_FILE == mode) {
+					if (!term.getIsSupressed()) {
+						if (term.getModifiedByRulesString().equals(""))
+							System.out.println(providedTerm
+									.getOriginalMRCONSO());
+						else
+							System.out.println(providedTerm.getUpdatedMRCONSO(
+									term.getTerm(),
+									term.getModifiedByRulesString()));
+					}
+			} else if (FilterMode.BASELINE_GAZETTEER_FILE == mode) {
 				final String term = providedTerm.getTerm();
 				final String cui = providedTerm.getCui();
 				printGazetteerString(term, cui, "", alreadyPrinted);

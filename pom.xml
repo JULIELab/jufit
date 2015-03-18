@@ -7,7 +7,7 @@
 	</properties>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>JenaUmlsFilter</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.9</version>
 	<groupId>de.julielab</groupId>
 	<dependencies>
 		<dependency>
@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>de.julielab</groupId>
 			<artifactId>umls2obo-converter</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.alias-i</groupId>
@@ -53,6 +53,7 @@
 					</archive>
 					<appendAssemblyId>true</appendAssemblyId>
 					<finalName>JenaUmlsFilter-${project.version}</finalName>
+					<outputDirectory>${project.basedir}</outputDirectory>
 				</configuration>
 				<executions>
 					<execution>

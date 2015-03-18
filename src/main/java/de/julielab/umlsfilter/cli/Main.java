@@ -47,19 +47,20 @@ public class Main {
 		if (TASKS.containsKey(task)) {
 			if (args.length < 3) {
 				System.err
-				.printf("Need at least 2 arguments, got %s\n"
-						+ "1, MRCONSO file\n"
-						+ "2, MRSTY file\n"
-						+ "3, language to process, 3 letter code\n"
-						+ "(4, optional json file used instead of default configuration)\n",
-						args.length);
+						.printf("Need at least 2 arguments, got %s\n"
+								+ "1, MRCONSO file\n"
+								+ "2, MRSTY file\n"
+								+ "3, language to process, 3 letter code\n"
+								+ "(4, optional json rule file used instead of the default configuration)\n",
+								args.length);
 				System.exit(0);
 			}
 			final String pathToMRCONSO = args[0];
 			final String pathToMRSTY = args[1];
 			final String language = args[2];
 			if (language.length() != 3) {
-				System.err.println("Only 3 letter languages codes supported, e.g. ENG for English");
+				System.err
+						.println("Only 3 letter languages codes supported, e.g. ENG for English");
 				System.exit(0);
 			}
 			Iterator<ProvidedTerm> iterator = UMLSTermProvider
@@ -74,24 +75,18 @@ public class Main {
 			iterator = UMLSTermProvider.provideUMLSTerms(pathToMRCONSO,
 					pathToMRSTY, true, language);
 			final String jsonFile = args.length > 3 ? args[3] : null;
-			// if (task.equals("fe"))
-			// Delemmatizer.delemmatize(iterator, FilterMode.SYNONYM,
-			// existingTerms, jsonFile, language);
-			// else if (task.equals("fm"))
-			// Delemmatizer.delemmatize(iterator, FilterMode.MRCONSO,
-			// existingTerms, jsonFile, language);
-			// else if (task.equals("fc"))
-			// Delemmatizer.delemmatize(iterator,
-			// FilterMode.SYNONYM_IF_CHANGED, existingTerms, jsonFile,
-			// language);
-			// else if
-			if (task.equals("ga"))
-				Delemmatizer.delemmatize(iterator,
-						FilterMode.DO_NOTHING_PRODUCE_GAZETTEER_FILE,
-						existingTerms, jsonFile, language);
+			FilterMode mode = null;
+			if (task.equals("mr"))
+				mode = FilterMode.MRCONSO;
+			else if (task.equals("ga"))
+				mode = FilterMode.BASELINE_GAZETTEER_FILE;
 			else if (task.equals("gf"))
-				Delemmatizer.delemmatize(iterator,
-						FilterMode.PRODUCE_GAZETTEER_FILE, existingTerms,
+				mode = FilterMode.PRODUCE_GAZETTEER_FILE;
+
+			if (null == mode)
+				printTasks();
+			else
+				Delemmatizer.delemmatize(iterator, mode, existingTerms,
 						jsonFile, language);
 		} else
 			printTasks();
@@ -104,16 +99,9 @@ public class Main {
 	}
 
 	private static final TreeMap<String, String> TASKS = new TreeMap<String, String>() {
-		/**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
-
+		private static final long serialVersionUID = 2L;
 		{
-			// put("fm", "filter umls, output mrconso");
-			// put("fe", "filter umls, output rewritten entries");
-			// put("fc",
-			// "filter umls, output rewritten entries if changed, mark deleted");
+			put("mr", "filter umls, output mrconso");
 			put("ga", "generate gazetteer file, without any filtering");
 			put("gf", "generate gazetteer file, applying filter");
 		}
