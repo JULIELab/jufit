@@ -12,7 +12,11 @@
 			"square" : ["Dokumenttyp"]
 		},
 	 	"RewriteSyntacticInversion" : {
-	 	 	"compound" : ["true"]
+	 	 	"compound" : ["true"],
+	 	 	"destructive" : ["false"]
+	 	},
+	 	"RewriteShortFormLongForm" : {
+	 	 	"destructive" : ["false"]
 	 	},
 	 	"DeleteIfContainsDosage" : { "day" : ["day", "tag"] }
 	}

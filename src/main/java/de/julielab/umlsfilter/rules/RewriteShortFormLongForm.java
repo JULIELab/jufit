@@ -1,21 +1,20 @@
 /**
- * This is JUFIT, the Jena UMLS Filter
- * Copyright (C) 2015 JULIE LAB
- * Authors: Johannes Hellrich and Sven Buechel
+ * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015 JULIE LAB Authors:
+ * Johannes Hellrich and Sven Buechel
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 package de.julielab.umlsfilter.rules;
@@ -31,155 +30,16 @@ import java.util.regex.Pattern;
  */
 public class RewriteShortFormLongForm extends Rule {
 
-	private static final String RULENAME = "SFLF";
-
-	private final Matcher noParaMatcher = Pattern.compile("\\(.*\\)").matcher(
-			"");
-
-	private final Matcher letterMatcher = Pattern.compile("\\p{L}").matcher("");
-
-	private final Matcher paraMatcherWithNames = Pattern.compile(
-			IN_PARENTHESES_TEMPLATE.replace("OPENPAR", "(").replace("CLOSEPAR",
-					")")).matcher("");
-
-	public RewriteShortFormLongForm() {
-		super(RULENAME);
-	}
-
-	public RewriteShortFormLongForm(final Map<String, String[]> parameters) {
-		this();
-	}
-
-	@Override
-	public ArrayList<TermWithSource> applyOnOneTerm(final TermWithSource tws) {
-		ArrayList<TermWithSource> out = null;
-		final String s = tws.getTerm();
-		final String parenthesesContent = getParenthesesContent(s);
-		if (parenthesesContent != null) {
-			final String withoutParenthesesAndTheirContent = noParaMatcher
-					.reset(s).replaceAll("").trim();
-
-			if (Rule.countWords(parenthesesContent) > 2) {
-				// Parentheses contain possible long form, now searching for
-				// possible short form at the end of nonPara
-				final String[] possibleShortForms = findPossibleShortForms(withoutParenthesesAndTheirContent);
-				final ArrayList<String> possibleLongForms = new ArrayList<String>();
-				for (final String z : possibleShortForms)
-					if (Rule.countWords(parenthesesContent) <= Math.min(
-							z.length() + 5, z.length() * 2))
-						possibleLongForms.add(RewriteShortFormLongForm
-								.findBestLongForm(z, parenthesesContent));
-
-				// exactly one short/long form found -> return
-				if ((possibleLongForms.size() == 1)
-						&& (possibleLongForms.get(0) != null)) {
-					final String shortForm = withoutParenthesesAndTheirContent;
-					final String longForm = possibleLongForms.get(0);
-					if (longAndShortFormCompatible(longForm, shortForm)) {
-						out = new ArrayList<>();
-						out.add(new TermWithSource(shortForm,
-								tws.getLanguage(), tws.getIsChem(), tws
-										.getMdifiedByRulesList(), ruleName));
-						out.add(new TermWithSource(longForm, tws.getLanguage(),
-								tws.getIsChem(), tws.getMdifiedByRulesList(),
-								ruleName));
-						return out;
-					}
-				}
-			} else if (meetShortFormConstrains(parenthesesContent)
-					&& s.endsWith(parenthesesContent + ")") // TODO change if
-					// other parentheses
-					// supported
-					&& (Rule.countWords(withoutParenthesesAndTheirContent) <= Math
-							.min(parenthesesContent.length() + 5,
-									parenthesesContent.length() * 2))) {
-				/*
-				 * tests if substring outside of parenthesis is short enough to
-				 * be long from, ALTERNATIVE: if possible long form is too long,
-				 * reduce length until it meets length constrain
-				 */
-				final String longForm = RewriteShortFormLongForm
-						.findBestLongForm(parenthesesContent,
-								withoutParenthesesAndTheirContent);
-				if (longForm != null) {
-					final String shortForm = parenthesesContent;
-					if (longAndShortFormCompatible(longForm, shortForm)) {
-						out = new ArrayList<>();
-						out.add(new TermWithSource(shortForm,
-								tws.getLanguage(), tws.getIsChem(), tws
-										.getMdifiedByRulesList(), ruleName));
-						out.add(new TermWithSource(longForm, tws.getLanguage(),
-								tws.getIsChem(), tws.getMdifiedByRulesList(),
-								ruleName));
-						return out;
-					}
-				}
-			}
-		}
-		return out;
-	}
-
-	/**
-	 * takes string as input and returns a list of possible short form (meeting
-	 * length constrain) at the end of the String
-	 *
-	 * @param s
-	 * @return
-	 */
-	private String[] findPossibleShortForms(final String s) {
-		final ArrayList<String> out = new ArrayList<String>();
-		// white spaces are searched for in string, starting at the end
-		for (int z = s.length() - 1; z >= 0; z--) {
-			if (s.charAt(z) == ' ') {
-				final String sub = s.substring(z + 1);
-				if (meetShortFormConstrains(sub))
-					out.add(sub);
-			}
-
-			if ((z == 0) && meetShortFormConstrains(s))
-				out.add(s);
-
-		}
-		final String[] outArray = out.toArray(new String[0]);
-		return outArray;
-	}
-
-	// TODO: multiple parentheses
-	String getParenthesesContent(final String s) {
-		paraMatcherWithNames.reset(s);
-		if (!paraMatcherWithNames.find())
-			return null;
-		return paraMatcherWithNames.group("inPar").trim();
-	}
-
-	/**
-	 * Determines whether string meets length constrains for short forms.
-	 *
-	 * @param String
-	 *            s
-	 * @return boolean
-	 */
-	private boolean meetShortFormConstrains(final String s) {
-		if ((Rule.countWords(s) <= 2)
-				&& (s.length() >= 2)
-				&& (s.length() <= 10)
-				&& letterMatcher.reset(s).find()
-				&& (Character.isDigit(s.charAt(0)) || Character.isLetter(s
-						.charAt(0))))
-			return true;
-		return false;
-	}
-
 	static boolean containsAsToken(final String container,
 			final String contained) {
 		int start = 0;
 		int found = container.indexOf(contained, start);
 		while (found != -1) {
 			if (((found == 0) || !Character.isLetterOrDigit(container
-							.charAt(found - 1)))
-							&& ((container.length() == (found + contained.length())) || !Character
-									.isLetterOrDigit(container.charAt(found
-											+ contained.length()))))
+					.charAt(found - 1)))
+					&& ((container.length() == (found + contained.length())) || !Character
+							.isLetterOrDigit(container.charAt(found
+									+ contained.length()))))
 				return true;
 			start = found + contained.length();
 			found = container.indexOf(contained, start);
@@ -265,6 +125,156 @@ public class RewriteShortFormLongForm extends Rule {
 			final String shortForm) {
 		if ((shortForm.length() <= longForm.length())
 				&& !containsAsToken(longForm, shortForm))
+			return true;
+		return false;
+	}
+
+	private static final String RULENAME = "SFLF";
+	private final Matcher noParaMatcher = Pattern.compile("\\(.*\\)").matcher(
+			"");
+
+	private final Matcher letterMatcher = Pattern.compile("\\p{L}").matcher("");
+
+	private final Matcher paraMatcherWithNames = Pattern.compile(
+			IN_PARENTHESES_TEMPLATE.replace("OPENPAR", "(").replace("CLOSEPAR",
+					")")).matcher("");
+
+	private final boolean destructive;
+
+	public RewriteShortFormLongForm(final boolean destructive) {
+		super(RULENAME);
+		this.destructive = destructive;
+	}
+
+	public RewriteShortFormLongForm(final Map<String, String[]> parameters) {
+		super(RULENAME);
+		if (!parameters.containsKey(PARAMETER_DESTRUCTIVE)
+				|| (parameters.get(PARAMETER_DESTRUCTIVE).length != 1))
+			throw new IllegalArgumentException();
+		destructive = Boolean.parseBoolean(parameters
+				.get(PARAMETER_DESTRUCTIVE)[0]);
+	}
+
+	@Override
+	public ArrayList<TermWithSource> applyOnOneTerm(final TermWithSource tws) {
+		ArrayList<TermWithSource> out = null;
+		final String s = tws.getTerm();
+		final String parenthesesContent = getParenthesesContent(s);
+		if (parenthesesContent != null) {
+			final String withoutParenthesesAndTheirContent = noParaMatcher
+					.reset(s).replaceAll("").trim();
+
+			if (Rule.countWords(parenthesesContent) > 2) {
+				// Parentheses contain possible long form, now searching for
+				// possible short form at the end of nonPara
+				final String[] possibleShortForms = findPossibleShortForms(withoutParenthesesAndTheirContent);
+				final ArrayList<String> possibleLongForms = new ArrayList<String>();
+				for (final String z : possibleShortForms)
+					if (Rule.countWords(parenthesesContent) <= Math.min(
+							z.length() + 5, z.length() * 2))
+						possibleLongForms.add(RewriteShortFormLongForm
+								.findBestLongForm(z, parenthesesContent));
+
+				// exactly one short/long form found -> return
+				if ((possibleLongForms.size() == 1)
+						&& (possibleLongForms.get(0) != null)) {
+					final String shortForm = withoutParenthesesAndTheirContent;
+					final String longForm = possibleLongForms.get(0);
+					if (longAndShortFormCompatible(longForm, shortForm)) {
+						out = new ArrayList<>();
+						out.add(new TermWithSource(shortForm,
+								tws.getLanguage(), tws.getIsChem(), tws
+								.getMdifiedByRulesList(), ruleName));
+						out.add(new TermWithSource(longForm, tws.getLanguage(),
+								tws.getIsChem(), tws.getMdifiedByRulesList(),
+								ruleName));
+						if (destructive)
+							tws.supress();
+						return out;
+					}
+				}
+			} else if (meetShortFormConstrains(parenthesesContent)
+					&& s.endsWith(parenthesesContent + ")") // TODO change if
+					// other parentheses
+					// supported
+					&& (Rule.countWords(withoutParenthesesAndTheirContent) <= Math
+					.min(parenthesesContent.length() + 5,
+							parenthesesContent.length() * 2))) {
+				/*
+				 * tests if substring outside of parenthesis is short enough to
+				 * be long from, ALTERNATIVE: if possible long form is too long,
+				 * reduce length until it meets length constrain
+				 */
+				final String longForm = RewriteShortFormLongForm
+						.findBestLongForm(parenthesesContent,
+								withoutParenthesesAndTheirContent);
+				if (longForm != null) {
+					final String shortForm = parenthesesContent;
+					if (longAndShortFormCompatible(longForm, shortForm)) {
+						out = new ArrayList<>();
+						out.add(new TermWithSource(shortForm,
+								tws.getLanguage(), tws.getIsChem(), tws
+								.getMdifiedByRulesList(), ruleName));
+						out.add(new TermWithSource(longForm, tws.getLanguage(),
+								tws.getIsChem(), tws.getMdifiedByRulesList(),
+								ruleName));
+						if (destructive)
+							tws.supress();
+						return out;
+					}
+				}
+			}
+		}
+		return out;
+	}
+
+	/**
+	 * takes string as input and returns a list of possible short form (meeting
+	 * length constrain) at the end of the String
+	 *
+	 * @param s
+	 * @return
+	 */
+	private String[] findPossibleShortForms(final String s) {
+		final ArrayList<String> out = new ArrayList<String>();
+		// white spaces are searched for in string, starting at the end
+		for (int z = s.length() - 1; z >= 0; z--) {
+			if (s.charAt(z) == ' ') {
+				final String sub = s.substring(z + 1);
+				if (meetShortFormConstrains(sub))
+					out.add(sub);
+			}
+
+			if ((z == 0) && meetShortFormConstrains(s))
+				out.add(s);
+
+		}
+		final String[] outArray = out.toArray(new String[0]);
+		return outArray;
+	}
+
+	// TODO: multiple parentheses
+	String getParenthesesContent(final String s) {
+		paraMatcherWithNames.reset(s);
+		if (!paraMatcherWithNames.find())
+			return null;
+		return paraMatcherWithNames.group("inPar").trim();
+	}
+
+	/**
+	 * Determines whether string meets length constrains for short forms.
+	 *
+	 * @param String
+	 *            s
+	 * @return boolean
+	 */
+	private boolean meetShortFormConstrains(final String s) {
+		if ((Rule.countWords(s) <= 2)
+				&& (s.length() >= 2)
+				&& (s.length() <= 10)
+				&& letterMatcher.reset(s).find()
+				&& (Character.isDigit(s.charAt(0)) || Character.isLetter(s
+						.charAt(0))))
 			return true;
 		return false;
 	}

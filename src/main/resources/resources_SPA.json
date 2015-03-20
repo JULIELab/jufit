@@ -12,7 +12,11 @@
 			"square" : ["como un todo"]
 		},
 	 	"RewriteSyntacticInversion" : {
-	 	 	"compound" : ["false"]
+	 	 	"compound" : ["false"],
+	 	 	"destructive" : ["false"]
+	 	},
+	 	"RewriteShortFormLongForm" : {
+	 	 	"destructive" : ["false"]
 	 	},
 	 	"DeleteIfContainsDosage" : { "day" : ["day", "dias"] }
 	}

@@ -1,21 +1,20 @@
 /**
- * This is JUFIT, the Jena UMLS Filter
- * Copyright (C) 2015 JULIE LAB
- * Authors: Johannes Hellrich and Sven Buechel
+ * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015 JULIE LAB Authors:
+ * Johannes Hellrich and Sven Buechel
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 package de.julielab.umlsfilter.rules;
@@ -53,22 +52,25 @@ public class RewriteSyntacticInversion extends Rule {
 	private final Matcher doubleDash = Pattern.compile("-.*-").matcher("");
 
 	private final boolean compound;
+	private final boolean destructive;
 
-	/**
-	 *
-	 * @param compound
-	 */
-	public RewriteSyntacticInversion(final boolean compound) {
+	public RewriteSyntacticInversion(final boolean compound,
+			final boolean destructive) {
 		super(RULENAME);
 		this.compound = compound;
+		this.destructive = destructive;
 	}
 
 	public RewriteSyntacticInversion(final Map<String, String[]> parameters) {
 		super(RULENAME);
-		if (!(parameters.containsKey(PARAMETER_COMPOUND) && (parameters
-				.get(PARAMETER_COMPOUND).length == 1)))
+		if (!parameters.containsKey(PARAMETER_COMPOUND)
+				|| (parameters.get(PARAMETER_COMPOUND).length != 1)
+				|| !parameters.containsKey(PARAMETER_DESTRUCTIVE)
+				|| (parameters.get(PARAMETER_DESTRUCTIVE).length != 1))
 			throw new IllegalArgumentException();
 		compound = Boolean.parseBoolean(parameters.get(PARAMETER_COMPOUND)[0]);
+		destructive = Boolean.parseBoolean(parameters
+				.get(PARAMETER_DESTRUCTIVE)[0]);
 	}
 
 	@Override
@@ -89,7 +91,7 @@ public class RewriteSyntacticInversion extends Rule {
 						&& upperThenLowerFirst.reset(strings[0]).matches()
 						&& upperThenLowerSecond.reset(strings[1]).matches())
 					s2 = strings[0].substring(0, strings[0].length() - 1)
-							+ strings[1].toLowerCase();
+					+ strings[1].toLowerCase();
 				else if (!tws.getIsChem()
 						&& lowerDashLower.reset(strings[0]).matches()
 						&& upperThenLowerSecond.reset(strings[1]).matches()) {
@@ -97,8 +99,8 @@ public class RewriteSyntacticInversion extends Rule {
 							strings[0].length() - 1).split("-");
 					for (int i = 0; i < splits2.length; ++i)
 						splits2[i] = Character
-								.toUpperCase(splits2[i].charAt(0))
-								+ splits2[i].substring(1, splits2[i].length());
+						.toUpperCase(splits2[i].charAt(0))
+						+ splits2[i].substring(1, splits2[i].length());
 					s2 = DASH_JOINER.join(splits2) + "-" + strings[1];
 				} else
 					s2 = s2.replaceAll("- +", "-");
@@ -108,6 +110,8 @@ public class RewriteSyntacticInversion extends Rule {
 						.getIsChem(), tws.getMdifiedByRulesList(), ruleName));
 			}
 		}
+		if ((out != null) && destructive)
+			tws.supress();
 		return out;
 	}
 
