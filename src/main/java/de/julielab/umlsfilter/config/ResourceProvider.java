@@ -1,21 +1,20 @@
 /**
- * This is JUFIT, the Jena UMLS Filter
- * Copyright (C) 2015 JULIE LAB
- * Authors: Johannes Hellrich and Sven Buechel
+ * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015 JULIE LAB Authors:
+ * Johannes Hellrich and Sven Buechel
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 package de.julielab.umlsfilter.config;
@@ -35,11 +34,6 @@ import com.google.gson.Gson;
 import de.julielab.umlsfilter.delemmatizer.Delemmatizer;
 
 public class ResourceProvider {
-	private static final String LANGUAGE_INDEPENDENT_RESOURCES = "languageIndependentResources.json";
-	private static LanguageIndependentResources languageIndependentResources = null;
-	private static final Map<String, LanguageDependentResources> MapLanguages = new HashMap<>();
-	private final static String RESOURCE_PATH = "src/main/resources/";
-
 	/**
 	 * Fills Map languageDependentResources if empty
 	 *
@@ -99,7 +93,7 @@ public class ResourceProvider {
 
 	static <T> T readResourcesFile(final String resourceName,
 			final String resourcePath, final Class<T> resourceClass)
-			throws IOException {
+					throws IOException {
 		final Gson gson = new Gson();
 		BufferedReader buffered = null;
 		T resources = null;
@@ -147,5 +141,13 @@ public class ResourceProvider {
 						LanguageDependentResources.class));
 
 	}
+
+	private static final String LANGUAGE_INDEPENDENT_RESOURCES = "languageIndependentResources.json";
+
+	private static LanguageIndependentResources languageIndependentResources = null;
+
+	private static final Map<String, LanguageDependentResources> MapLanguages = new HashMap<>();
+
+	private final static String RESOURCE_PATH = "src/main/resources/";
 
 }

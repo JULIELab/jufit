@@ -1,5 +1,6 @@
 .settings
 .svn
+bin
 target
 .project
 .classpath

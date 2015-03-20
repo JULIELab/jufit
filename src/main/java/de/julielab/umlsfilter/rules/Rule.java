@@ -1,21 +1,20 @@
 /**
- * This is JUFIT, the Jena UMLS Filter
- * Copyright (C) 2015 JULIE LAB
- * Authors: Johannes Hellrich and Sven Buechel
+ * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015 JULIE LAB Authors:
+ * Johannes Hellrich and Sven Buechel
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 package de.julielab.umlsfilter.rules;
@@ -37,24 +36,6 @@ import de.julielab.umlsfilter.delemmatizer.Delemmatizer;
  *
  */
 public abstract class Rule {
-	protected final Matcher multiWhitespaces = Pattern.compile("\\s+").matcher(
-			"");
-	protected static final String IN_PARENTHESES_TEMPLATE = "(?<withPar>\\OPENPAR(?<inPar>.+?)\\CLOSEPAR)";
-	protected static final String PARAMETER_PATTERNS = "pattern";
-	protected static final String PARAMETER_STOPWORDS = "stopWords";
-	protected static final String PARAMETER_COMPOUND = "compound";
-	protected final String ruleName;
-
-	/**
-	 * Super constructor for specific rules
-	 *
-	 * @param ruleName
-	 *            used for logging
-	 */
-	protected Rule(final String ruleName) {
-		this.ruleName = ruleName;
-	}
-
 	/**
 	 * Combines multiple regular expression parts via disjunction
 	 *
@@ -89,6 +70,28 @@ public abstract class Rule {
 		if (parts.length == 0)
 			return null;
 		return Pattern.compile(combineParts(parts)).matcher("");
+	}
+
+	protected final Matcher multiWhitespaces = Pattern.compile("\\s+").matcher(
+			"");
+	protected static final String IN_PARENTHESES_TEMPLATE = "(?<withPar>\\OPENPAR(?<inPar>.+?)\\CLOSEPAR)";
+	protected static final String PARAMETER_PATTERNS = "pattern";
+	protected static final String PARAMETER_STOPWORDS = "stopWords";
+
+	protected static final String PARAMETER_COMPOUND = "compound";
+
+	protected static final String PARAMETER_DESTRUCTIVE = "destructive";
+
+	protected final String ruleName;
+
+	/**
+	 * Super constructor for specific rules
+	 *
+	 * @param ruleName
+	 *            used for logging
+	 */
+	protected Rule(final String ruleName) {
+		this.ruleName = ruleName;
 	}
 
 	/**
@@ -137,7 +140,8 @@ public abstract class Rule {
 	 * used in specific rules to process a term
 	 *
 	 * @param tws
-	 *            term with source to process, may be suppressed during processing
+	 *            term with source to process, may be suppressed during
+	 *            processing
 	 * @return the newly generated terms or null if none exist
 	 * @throws IOException
 	 */

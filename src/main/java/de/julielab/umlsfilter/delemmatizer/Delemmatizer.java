@@ -1,21 +1,20 @@
 /**
- * This is JUFIT, the Jena UMLS Filter
- * Copyright (C) 2015 JULIE LAB
- * Authors: Johannes Hellrich and Sven Buechel
+ * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015 JULIE LAB Authors:
+ * Johannes Hellrich and Sven Buechel
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 package de.julielab.umlsfilter.delemmatizer;
@@ -33,26 +32,16 @@ import java.util.regex.Pattern;
 
 import de.julielab.provider.ProvidedTerm;
 import de.julielab.umlsfilter.config.ResourceProvider;
-import de.julielab.umlsfilter.delemmatizer.FilterMode;
 import de.julielab.umlsfilter.rules.Rule;
 import de.julielab.umlsfilter.rules.TermContainer;
 import de.julielab.umlsfilter.rules.TermWithSource;
 
 public class Delemmatizer {
 
-	private final static Matcher punctuation = Pattern.compile("\\p{Punct}")
-			.matcher("");
-	private final static Matcher space = Pattern.compile("\\s").matcher("");
-	public static final String LANGUAGE_ENLGLISH = "ENG";
-	public static final String LANGUAGE_GERMAN = "GER";
-	public static final String LANGUAGE_FRENCH = "FRE";
-	public static final String LANGUAGE_SPANISH = "SPA";
-	public static final String LANGUAGE_DUTCH = "DUT";
-
 	/**
 	 * Entry point from Main class, processes provided umls terms and writer
 	 * results to stdout and logging information to stderr
-	 * 
+	 *
 	 * @param iterator
 	 *            Iterator over provided terms from UMLS
 	 * @param mode
@@ -70,7 +59,7 @@ public class Delemmatizer {
 	public static void delemmatize(final Iterator<ProvidedTerm> iterator,
 			final FilterMode mode, final Set<String> existingTerms,
 			final String jsonRuleFile, final String language)
-			throws IOException {
+					throws IOException {
 		final Delemmatizer d = new Delemmatizer();
 
 		if (jsonRuleFile != null)
@@ -85,7 +74,7 @@ public class Delemmatizer {
 							providedTerm.isChemicalOrDrug(), existingTerms);
 			if (FilterMode.MRCONSO == mode) {
 				for (final TermWithSource term : cleanedTerms.getRawTerms())
-					if (!term.getIsSupressed()) {
+					if (!term.getIsSupressed())
 						if (term.getModifiedByRulesString().equals(""))
 							System.out.println(providedTerm
 									.getOriginalMRCONSO());
@@ -93,7 +82,6 @@ public class Delemmatizer {
 							System.out.println(providedTerm.getUpdatedMRCONSO(
 									term.getTerm(),
 									term.getModifiedByRulesString()));
-					}
 			} else if (FilterMode.BASELINE_GAZETTEER_FILE == mode) {
 				final String term = providedTerm.getTerm();
 				final String cui = providedTerm.getCui();
@@ -111,7 +99,7 @@ public class Delemmatizer {
 								cui,
 								providedTerm.getTerm() + "---"
 										+ term.getModifiedByRulesString(),
-								alreadyPrinted);
+										alreadyPrinted);
 					else
 						printGazetteerString(term.getTerm(), cui, "",
 								alreadyPrinted);
@@ -141,7 +129,7 @@ public class Delemmatizer {
 	private static TermContainer delemmatizeTermForRules(final String s,
 			final String language, final boolean isChemicalOrDrug,
 			final List<Rule> rules, final Set<String> existingTerms)
-			throws IOException {
+					throws IOException {
 		final TermContainer termContainer = new TermContainer(s, language,
 				isChemicalOrDrug);
 
@@ -166,6 +154,19 @@ public class Delemmatizer {
 		return space.reset(punctuation.reset(s).replaceAll("").toLowerCase())
 				.replaceAll("");
 	}
+
+	private final static Matcher punctuation = Pattern.compile("\\p{Punct}")
+			.matcher("");
+	private final static Matcher space = Pattern.compile("\\s").matcher("");
+	public static final String LANGUAGE_ENLGLISH = "ENG";
+
+	public static final String LANGUAGE_GERMAN = "GER";
+
+	public static final String LANGUAGE_FRENCH = "FRE";
+
+	public static final String LANGUAGE_SPANISH = "SPA";
+
+	public static final String LANGUAGE_DUTCH = "DUT";
 
 	/**
 	 * Recycles constructed rules. Will be filled if necessary
@@ -225,12 +226,12 @@ public class Delemmatizer {
 
 	/**
 	 * Loads rules specified in json configuration file
-	 * 
+	 *
 	 * @param language
 	 *            language to load rules for
 	 * @throws IOException
 	 */
-	private void prepareRules(final String language) throws IOException {
+	void prepareRules(final String language) throws IOException {
 		final ArrayList<Rule> rules = new ArrayList<>();
 		for (final String rule : ResourceProvider.getRulesForLanguage(language))
 			try {
