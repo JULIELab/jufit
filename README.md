@@ -19,7 +19,7 @@ You need files from the UMLS. After registration at [UTS] (https:/uts.nlm.nih.go
 java -jar <JuFiT-JAR> <MODE> <PARAMETERS>
 ```
 
-### Additional hit, update your Java VM arguments with `-Xmx512M`
+### Additional hint: update your Java VM arguments with `-Xmx512M`
 
 Need at least 2 arguments, got 
 * 1: MRCONSO file
