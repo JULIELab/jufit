@@ -13,7 +13,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>JenaUmlsFilter</artifactId>
 	<version>1.0</version>
-	<groupId>de.julielab</groupId>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
