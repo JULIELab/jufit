@@ -20,11 +20,10 @@
 package de.julielab.umlsfilter.rules;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.common.base.Joiner;
 
@@ -81,7 +80,12 @@ public class RewriteSyntacticInversion extends Rule {
 				&& !s1.substring(s1.indexOf(", ") + 2).contains(", ")
 				&& !s1.contains("-, ")) {
 			final String[] strings = s1.split(", ");
-			ArrayUtils.reverse(strings);
+		    for (int i = 0; i < strings.length / 2; i++) {
+		        String temp = strings[i];
+		        int toSwitch = strings.length - 1 - i;
+		        strings[i] = strings[toSwitch];
+		        strings[toSwitch] = temp;
+		    }
 			String s2 = SPACE_JOINER.join(strings).trim();
 
 			if (containsDash.reset(s2).find())
