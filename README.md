@@ -8,7 +8,7 @@ This is the Jena UMLS Filter Tool (JuFiT), a rule-based open-source tool to filt
 
 You need files from the UMLS. After registration at [UTS](https:/uts.nlm.nih.gov), you can download the UMLS files from the [U.S. National Library of Medicine (NIH)](https://www.nlm.nih.gov/research/umls/). Unpack the ZIP file of a UMLS version (e.g. `umls-2017AA-full.zip`). Unpack the files `MRCONSO.RRF.aa` and `MRCONSO.RRF.ab` (files of Concept Names and Sources), concatenate these both to one file and unpack `MRSTY.RFF` (Semantic Types). Use these files for the input of JuFiT. 
 
-More information on the UMLS can be found in the [UMLS® Reference Manual (https://www.ncbi.nlm.nih.gov/books/NBK9676/)].
+More information on the UMLS can be found in the [UMLS® Reference Manual](https://www.ncbi.nlm.nih.gov/books/NBK9676/).
 
 ### License
 BSD license (2-clause). 
