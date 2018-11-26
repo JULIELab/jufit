@@ -1,13 +1,21 @@
+/**
+ * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015-2018 JULIE LAB
+ * Authors: Johannes Hellrich and Sven Buechel
+ *
+ * This program is free software, see the accompanying LICENSE file for details.
+ */
+
 package de.julielab.provider;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.LineIterator;
+import com.google.common.collect.Sets;
 
 public class UMLSTermProvider {
 	private static final int CUI_INDEX = 0;
@@ -17,67 +25,61 @@ public class UMLSTermProvider {
 	static final int SUPPRESSIBLE_INDEX = 16;
 	public static final int SUI_INDEX = 5;
 
-	public static Iterator<ProvidedTerm> provideUMLSTerms(
-			final String pathToMRCONSO, final String pathToMRSTY,
-			final String... languages) throws IOException {
-		return provideUMLSTerms(pathToMRCONSO, pathToMRSTY, false, false,
-				languages);
-	}
-
-	public static Iterator<ProvidedTerm> provideUMLSTerms(
-			final String pathToMRCONSO, final String pathToMRSTY,
-			final boolean suppressSuppressable, final String... languages)
-			throws IOException {
-		return provideUMLSTerms(pathToMRCONSO, pathToMRSTY, suppressSuppressable, false,
-				languages);
+	/**
+	 * C0000005|T116|A1.4.1.2.1.7|Amino Acid, Peptide, or Protein|AT17648347||
+	 *
+	 * @param pathToMRSTY
+	 * @return
+	 * @throws IOException
+	 */
+	static Set<String> getSemanticGroupCUIs(final String pathToMRSTY,
+			final Set<SemanticGroup> semanticGroups) throws IOException {
+		final Set<String> cuis = new HashSet<>();
+		Files.lines(Paths.get(pathToMRSTY), Charset.forName("UTF-8"))
+				.forEach(line -> {
+					final String[] splitline = line.split("\\|");
+					if (semanticGroups
+							.contains(SemanticGroup.getSemanticGroupForTermId(
+									splitline[TERM_ID_INDEX])))
+						cuis.add(splitline[CUI_INDEX]);
+				});
+		return cuis;
 	}
 
 	/*
 	 * Sample MRCONSO:
-	 *C1880521|ENG|P|L6576556|PF|S7670926|Y|A13035724||||MTH|PN|NOCODE|Enzyme Unit per Milliliter|0|N|256|
+	 * C1880521|ENG|P|L6576556|PF|S7670926|Y|A13035724||||MTH|PN|NOCODE|Enzyme
+	 * Unit per Milliliter|0|N|256|
 	 * C0000005|ENG|S|L0270109|PF|S0007491|Y|A0016458||M0019694|D012711|MSH|EN|
 	 * D012711|(131)I-MAA|0|N||
 	 */
 	public static Iterator<ProvidedTerm> provideUMLSTerms(
 			final String pathToMRCONSO, final String pathToMRSTY,
 			final boolean suppressSuppressable, final boolean onlyPref,
+			final Set<SemanticGroup> onlyTheseSemanticGroups,
 			final String... languages) throws IOException {
-		final Set<String> drugOrChemicalCUIs = getDrugOrChemicalCUIs(pathToMRSTY);
+		final Set<String> drugOrChemicalCUIs = getSemanticGroupCUIs(pathToMRSTY,
+				Sets.newHashSet(SemanticGroup.CHEM));
+
 		final Set<String> legalLanguages = languages.length == 0 ? null
-				: new HashSet<String>(languages.length);
+				: new HashSet<>(languages.length);
 		if (languages.length != 0)
 			for (final String language : languages)
 				legalLanguages.add(language.toUpperCase());
 
+		final Set<String> legalCUIs = ((onlyTheseSemanticGroups == null)
+				|| onlyTheseSemanticGroups.isEmpty()) ? null
+						: getSemanticGroupCUIs(pathToMRSTY,
+								onlyTheseSemanticGroups);
+
 		return new Iterator<ProvidedTerm>() {
-			private final LineIterator li;
+			private final Iterator<String> li = Files
+					.lines(Paths.get(pathToMRCONSO), Charset.forName("UTF-8"))
+					.iterator();
 			private ProvidedTerm next;
 
 			{
-				li = FileUtils.lineIterator(new File(pathToMRCONSO), "UTF-8");
 				produceNext();
-			}
-
-			private void produceNext() {
-				next = null;
-				while (li.hasNext() && (null == next)) {
-					final String line = (String) li.next();
-					final String[] splitline = line.split("\\|");
-					final String cui = splitline[CUI_INDEX];
-					final String term = splitline[TERM_INDEX];
-					final String language = splitline[LANGUAGE_INDEX];
-					final boolean isChemicalOrDrug = drugOrChemicalCUIs
-							.contains(splitline[CUI_INDEX]);
-					final boolean isPref = splitline[2].equals("P")
-							&& splitline[4].equals("PF")
-							&& splitline[6].equals("Y");
-					if (((legalLanguages == null) || legalLanguages
-							.contains(language))
-							&& (!suppressSuppressable || splitline[SUPPRESSIBLE_INDEX]
-									.equals("N")) && (!onlyPref || isPref))
-						next = new ProvidedTerm(cui, term, language,
-								isChemicalOrDrug, line);
-				}
 			}
 
 			@Override
@@ -92,6 +94,31 @@ public class UMLSTermProvider {
 				return toReturn;
 			}
 
+			private void produceNext() {
+				next = null;
+				while (li.hasNext() && (null == next)) {
+					final String line = li.next();
+					final String[] splitline = line.split("\\|");
+					final String cui = splitline[CUI_INDEX];
+					final String term = splitline[TERM_INDEX];
+					final String language = splitline[LANGUAGE_INDEX];
+					final boolean isChemicalOrDrug = drugOrChemicalCUIs
+							.contains(splitline[CUI_INDEX]);
+					final boolean isPref = splitline[2].equals("P")
+							&& splitline[4].equals("PF")
+							&& splitline[6].equals("Y");
+					if (((legalCUIs == null) || legalCUIs.contains(cui))
+							&& ((legalLanguages == null)
+									|| legalLanguages.contains(language))
+							&& (!suppressSuppressable
+									|| splitline[SUPPRESSIBLE_INDEX]
+											.equals("N"))
+							&& (!onlyPref || isPref))
+						next = new ProvidedTerm(cui, term, language,
+								isChemicalOrDrug, line);
+				}
+			}
+
 			@Override
 			public void remove() {
 				throw new RuntimeException();
@@ -99,31 +126,21 @@ public class UMLSTermProvider {
 		};
 	}
 
-	/**
-	 * C0000005|T116|A1.4.1.2.1.7|Amino Acid, Peptide, or Protein|AT17648347||
-	 *
-	 * @param pathToMRSTY
-	 * @return
-	 */
-	static Set<String> getDrugOrChemicalCUIs(final String pathToMRSTY) {
-		final Set<String> drugOrChemicalCUIs = new HashSet<String>();
+	public static Iterator<ProvidedTerm> provideUMLSTerms(
+			final String pathToMRCONSO, final String pathToMRSTY,
+			final boolean suppressSuppressable,
+			final Set<SemanticGroup> onlyTheseSemanticGroups,
+			final String... languages) throws IOException {
+		return provideUMLSTerms(pathToMRCONSO, pathToMRSTY,
+				suppressSuppressable, false, onlyTheseSemanticGroups,
+				languages);
+	}
 
-		LineIterator li = null;
-		try {
-			li = FileUtils.lineIterator(new File(pathToMRSTY), "UTF-8");
-			while (li.hasNext()) {
-				final String line = (String) li.next();
-				final String[] splitline = line.split("\\|");
-				if (SemanticGroup.CHEM == SemanticGroup
-						.getSemanticGroupForTermId(splitline[TERM_ID_INDEX]))
-					drugOrChemicalCUIs.add(splitline[CUI_INDEX]);
-			}
-		} catch (final IOException e) {
-			e.printStackTrace();
-		} finally {
-			LineIterator.closeQuietly(li);
-		}
-
-		return drugOrChemicalCUIs;
+	public static Iterator<ProvidedTerm> provideUMLSTerms(
+			final String pathToMRCONSO, final String pathToMRSTY,
+			final Set<SemanticGroup> onlyTheseSemanticGroups,
+			final String... languages) throws IOException {
+		return provideUMLSTerms(pathToMRCONSO, pathToMRSTY, false, false,
+				onlyTheseSemanticGroups, languages);
 	}
 }

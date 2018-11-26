@@ -6,9 +6,8 @@ This is the Jena UMLS Filter Tool (JuFiT), a rule-based open-source tool to filt
 
 ### Input
 
-You need files from the UMLS. After registration at [UTS] (https:/uts.nlm.nih.gov), you can download the UMLS files from the [U.S. National Library of Medicine (NIH)] (https://www.nlm.nih.gov/research/umls/). Unpack the ZIP file of a UMLS version (e.g. `umls-2017AA-full.zip`). Unpack the files `MRCONSO.RRF.aa` and `MRCONSO.RRF.ab` (files of Concept Names and Sources), concatenate these both to one file and unpack `MRSTY.RFF` (Semantic Types). Use this files for the input of JuFiT.
+You need files from the UMLS. After registration at [UTS] (https:/uts.nlm.nih.gov), you can download the UMLS files from the [U.S. National Library of Medicine (NIH)] (https://www.nlm.nih.gov/research/umls/). Unpack the ZIP file of a UMLS version (e.g. `umls-2017AA-full.zip`). Unpack the files `MRCONSO.RRF.aa` and `MRCONSO.RRF.ab` (files of Concept Names and Sources), concatenate these both to one file and unpack `MRSTY.RFF` (Semantic Types). Use these files for the input of JuFiT.
 
-### Gazetteer format
 
 ### Further information
   * [UMLS® Reference Manual (https://www.ncbi.nlm.nih.gov/books/NBK9676/)]
@@ -16,30 +15,25 @@ You need files from the UMLS. After registration at [UTS] (https:/uts.nlm.nih.go
 
 ## Usage
 ```
-java -jar <JuFiT-JAR> <MODE> <PARAMETERS>
+Usage:
+ jufit <mrconso> <mrsty> <language> (--mrconso | --terms | --grounded | --complex) [--semanticGroup=GROUP]... [--rules=JSON] [--noFilter]
+ jufit --help
+ jufit --version
+
+Options:
+--help  Show help screen
+--version  Show the version number
+--mrconso  MRCONSO output format (one format must be chosen)
+--terms  terms only output (one format must be chosen)
+--grounded  terms and CUIs output, separated with "|" (one format must be chosen)
+--complex  complex output format providing applied rules (one format must be chosen)
+--semanticGroup=GROUP  Process only terms belonging to a semantic group (repeat for multiple)--rules=JSON  file with rules to use instead of defaults (probably not a good idea)
+--noFilter  Do not filter output (incompatible with --mrconso as nothing would to be done)
+
 ```
+Languages must be given as three letter abbreviations, e.g., `ENG`, `GER`, `SPA`, `FRE` or `DUT`
 
 ### Additional hint: update your Java VM arguments with `-Xmx512M`
 
-Need at least 2 arguments, got 
-* 1: MRCONSO file
-* 2: MRSTY file
-* 3: language to process, 3 letter code (`ENG`, `GER`, `SPA`, `FRE`, `DUT`)
-* 4: optional json rule file used instead of the default configuration
-
-### Modes
-
-* `mr` - filter UMLS, output MRCONSO
-* `ga` - generate gazetteer file (idiosyncratic format), without any filtering 
-* `gf` - generate gazetteer file (idiosyncratic format), applying filter
-
-
-### Example Usage
-```
-ga MRCONSO.RRF MRSTY.RRF GER
-```
-### Parameters
-```
-Depend on mode, call a mode to see its parameters as a help message.
-```
-
+## Recent Changes:
+  * 1.1 New output formats, new command line interface, change to license

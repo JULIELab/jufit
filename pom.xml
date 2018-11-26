@@ -12,7 +12,7 @@
 	
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>JenaUmlsFilter</artifactId>
-	<version>1.0</version>
+	<version>1.1</version>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -29,11 +29,6 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.8.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.alias-i</groupId>
-			<artifactId>lingpipe</artifactId>
-			<version>4.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.offbytwo</groupId>

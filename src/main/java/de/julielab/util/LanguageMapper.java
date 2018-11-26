@@ -1,11 +1,18 @@
+/**
+ * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015-2018 JULIE LAB
+ * Authors: Johannes Hellrich and Sven Buechel
+ *
+ * This program is free software, see the accompanying LICENSE file for details.
+ */
+
 package de.julielab.util;
 
 import java.util.HashMap;
 
 public class LanguageMapper {
 
-	private final static HashMap<String, String> umls2obo = new HashMap<String, String>();
-	private final static HashMap<String, String> obo2umls = new HashMap<String, String>();
+	private final static HashMap<String, String> umls2obo = new HashMap<>();
+	private final static HashMap<String, String> obo2umls = new HashMap<>();
 
 	static {
 		umls2obo.put("BAQ", "EU"); // Basque
@@ -42,8 +49,8 @@ public class LanguageMapper {
 	 *            Language to convert
 	 * @return converted language
 	 */
-	public static String convertLanguageUmls2Obo(final String lang) {
-		return umls2obo.get(lang);
+	public static String convertLanguageObo2Umls(final String lang) {
+		return obo2umls.get(lang);
 
 	}
 
@@ -55,8 +62,8 @@ public class LanguageMapper {
 	 *            Language to convert
 	 * @return converted language
 	 */
-	public static String convertLanguageObo2Umls(final String lang) {
-		return obo2umls.get(lang);
+	public static String convertLanguageUmls2Obo(final String lang) {
+		return umls2obo.get(lang);
 
 	}
 

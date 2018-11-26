@@ -1,22 +1,9 @@
 /**
- * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015 JULIE LAB Authors:
- * Johannes Hellrich and Sven Buechel
+ * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015-2018 JULIE LAB
+ * Authors: Johannes Hellrich and Sven Buechel
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * This program is free software, see the accompanying LICENSE file for details.
  */
-
 package de.julielab.umlsfilter.config;
 
 import java.io.BufferedReader;
@@ -34,6 +21,14 @@ import com.google.gson.Gson;
 import de.julielab.umlsfilter.delemmatizer.Delemmatizer;
 
 public class ResourceProvider {
+	private static final String LANGUAGE_INDEPENDENT_RESOURCES = "languageIndependentResources.json";
+
+	private static LanguageIndependentResources languageIndependentResources = null;
+
+	private static final Map<String, LanguageDependentResources> MapLanguages = new HashMap<>();
+
+	private final static String RESOURCE_PATH = "src/main/resources/";
+
 	/**
 	 * Fills Map languageDependentResources if empty
 	 *
@@ -63,8 +58,8 @@ public class ResourceProvider {
 		return languageIndependentResources.parentheticals;
 	}
 
-	public static Map<String, String[]> getRuleParameters(
-			final String language, final String ruleName) throws IOException {
+	public static Map<String, String[]> getRuleParameters(final String language,
+			final String ruleName) throws IOException {
 		fillLanguageDependentResources();
 		if (!MapLanguages.containsKey(language))
 			throw new IllegalArgumentException(language + " not supported");
@@ -93,14 +88,14 @@ public class ResourceProvider {
 
 	static <T> T readResourcesFile(final String resourceName,
 			final String resourcePath, final Class<T> resourceClass)
-					throws IOException {
+			throws IOException {
 		final Gson gson = new Gson();
 		BufferedReader buffered = null;
 		T resources = null;
 		// works in Eclipse
 		try {
-			final FileReader fileReader = new FileReader(resourcePath
-					+ resourceName);
+			final FileReader fileReader = new FileReader(
+					resourcePath + resourceName);
 			buffered = new BufferedReader(fileReader);
 			resources = gson.fromJson(buffered, resourceClass);
 
@@ -135,19 +130,9 @@ public class ResourceProvider {
 			final String jsonFile) throws IOException {
 		if (!new File(jsonFile).canRead())
 			throw new IOException("Can not read " + jsonFile);
-		MapLanguages.put(
-				language,
-				readResourcesFile(jsonFile, "",
-						LanguageDependentResources.class));
+		MapLanguages.put(language, readResourcesFile(jsonFile, "",
+				LanguageDependentResources.class));
 
 	}
-
-	private static final String LANGUAGE_INDEPENDENT_RESOURCES = "languageIndependentResources.json";
-
-	private static LanguageIndependentResources languageIndependentResources = null;
-
-	private static final Map<String, LanguageDependentResources> MapLanguages = new HashMap<>();
-
-	private final static String RESOURCE_PATH = "src/main/resources/";
 
 }
