@@ -7,7 +7,10 @@
 
 package de.julielab.umlsfilter.cli;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +33,7 @@ public class Main {
 	public static final String VERSION = "1.1";
 
 	private static final String doc = "Usage:\n"
-			+ " jufit <mrconso> <mrsty> <language> (--mrconso | --terms | --grounded | --complex) [--semanticGroup=GROUP]... [--rules=JSON] [--noFilter]\n"
+			+ " jufit <mrconso> <mrsty> <language> (--mrconso | --terms | --grounded | --complex) [--outFile=FILE] [--semanticGroup=GROUP]... [--rules=JSON] [--noFilter]\n"
 			+ " jufit --help\n" + " jufit --version\n" + "\nOptions:\n"
 			+ "--help  Show this screen\n"
 			+ "--version  Show the version number\n"
@@ -38,11 +41,12 @@ public class Main {
 			+ "--terms  terms only output (one format must be chosen)\n"
 			+ "--grounded  terms and CUIs output, separated with \""
 			+ Delemmatizer.SEPARATOR + "\" (one format must be chosen)\n"
-			+ "--complex  complex output format providing applied rules (one format must be chosen)\n"
-			+ "--semanticGroup=GROUP  Process only terms belonging to a semantic group (repeat for multiple)"
+			+ "--complex  complex output format providing applied rules, also writes removed terms to stderr (one format must be chosen)\n"
+			+ "--outFile=FILE  write output to this file instead of stdout\n"
+			+ "--semanticGroup=GROUP  Process only terms belonging to a semantic group (repeat for multiple)\n"
 			+ "--rules=JSON  file with rules to use instead of defaults (probably not a good idea)\n"
-			+ "--noFilter  Do not filter output (incompatible with --mrconso as nothing would to be done)\n";
-
+			+ "--noFilter  Do not filter output (incompatible with --mrconso as nothing would to be done)";
+	
 	@SuppressWarnings("unchecked")
 	public static void main(final String[] args) throws IOException {
 		final Map<String, Object> opts = new Docopt(doc).withVersion(VERSION)
@@ -84,11 +88,14 @@ public class Main {
 					"No valid output format selected!");
 
 		final boolean applyFilters = !(boolean) opts.get("--noFilter");
-
 		if (!applyFilters && (OutputFormat.MRCONSO == outputFormat))
 			throw new IllegalArgumentException(
 					"Applying no filtering while producing MRCONSO format is pointless");
 
+		final String outFileName = (String) opts.get("--outFile"); //may be null, respected later
+		if(null != outFileName)
+			System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(outFileName)), true));
+		
 		//Iterate over UMLS to generate list of existing terms
 		//TODO Currently respects pre-existing terms of all semantic groups, even those later ignored. Trivial change, unsure what is expected behavior?
 		final Set<String> existingTerms = Streams

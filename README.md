@@ -14,21 +14,21 @@ BSD license (2-clause). Please cite [JuFiT: A Configurable Rule Engine for Filte
 
 ## Usage
 ```
-Usage:
- jufit <mrconso> <mrsty> <language> (--mrconso | --terms | --grounded | --complex) [--semanticGroup=GROUP]... [--rules=JSON] [--noFilter]
+ jufit <mrconso> <mrsty> <language> (--mrconso | --terms | --grounded | --complex) [--outFile=FILE] [--semanticGroup=GROUP]... [--rules=JSON] [--noFilter]
  jufit --help
  jufit --version
 
 Options:
---help  Show help screen
+--help  Show this screen
 --version  Show the version number
 --mrconso  MRCONSO output format (one format must be chosen)
 --terms  terms only output (one format must be chosen)
 --grounded  terms and CUIs output, separated with "|" (one format must be chosen)
---complex  complex output format providing applied rules (one format must be chosen)
---semanticGroup=GROUP  Process only terms belonging to a semantic group (repeat for multiple)--rules=JSON  file with rules to use instead of defaults (probably not a good idea)
+--complex  complex output format providing applied rules, also writes removed terms to stderr (one format must be chosen)
+--outFile=FILE  write output to this file instead of stdout
+--semanticGroup=GROUP  Process only terms belonging to a semantic group (repeat for multiple)
+--rules=JSON  file with rules to use instead of defaults (probably not a good idea)
 --noFilter  Do not filter output (incompatible with --mrconso as nothing would to be done)
-
 ```
 Languages must be given as three letter abbreviations, e.g., `ENG`, `GER`, `SPA`, `FRE` or `DUT`
 We suggest updating your Java VM arguments to use at least 0.5GB of RAM, i.e., `-Xmx512M`
