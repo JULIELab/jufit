@@ -45,7 +45,7 @@ public class Main {
 			+ "--outFile=FILE  write output to this file instead of stdout\n"
 			+ "--semanticGroup=GROUP  Process only terms belonging to a semantic group (repeat for multiple)\n"
 			+ "--rules=JSON  file with rules to use instead of defaults (probably not a good idea)\n"
-			+ "--noFilter  Do not filter output (incompatible with --mrconso as nothing would to be done)";
+			+ "--noFilter  Do not filter output (incompatible with --mrconso as nothing would need to be done)";
 	
 	@SuppressWarnings("unchecked")
 	public static void main(final String[] args) throws IOException {

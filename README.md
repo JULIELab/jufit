@@ -28,7 +28,7 @@ Options:
 --outFile=FILE  write output to this file instead of stdout
 --semanticGroup=GROUP  Process only terms belonging to a semantic group (repeat for multiple)
 --rules=JSON  file with rules to use instead of defaults (probably not a good idea)
---noFilter  Do not filter output (incompatible with --mrconso as nothing would to be done)
+--noFilter  Do not filter output (incompatible with --mrconso as nothing would need to be done)
 ```
 Languages must be given as three letter abbreviations, e.g., `ENG`, `GER`, `SPA`, `FRE` or `DUT`
 We suggest updating your Java VM arguments to use at least 0.5GB of RAM, i.e., `-Xmx512M`
