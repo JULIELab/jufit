@@ -47,7 +47,6 @@ public class Main {
 	public static void main(final String[] args) throws IOException {
 		final Map<String, Object> opts = new Docopt(doc).withVersion(VERSION)
 				.parse(args);
-		System.out.println("DEBUG:" + opts);
 		final String pathToMRCONSO = (String) opts.get("<mrconso>");
 		final String pathToMRSTY = (String) opts.get("<mrsty>");
 		final String language = (String) opts.get("<language>");
