@@ -35,7 +35,7 @@ public class Tester {
 	 */
 	@SuppressWarnings("deprecation")
 	public Tester(final String input, final String language,
-			final boolean isChemicalOrDrug, final boolean isJulieVersion,
+			final boolean isChemicalOrDrug, 
 			final String... expected) throws IOException {
 		this.input = input;
 		this.language = language;

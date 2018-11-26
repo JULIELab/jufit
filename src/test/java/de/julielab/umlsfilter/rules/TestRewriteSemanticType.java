@@ -38,6 +38,10 @@ public class TestRewriteSemanticType {
 			new TestPair("bla (SMQ)", "bla"),
 			new TestPair("blu <SMQ>", "blu <SMQ>"), };
 
+	TestPair[] pairsSemanticSpanish = { new TestPair(
+			"reparación de múltiples desgarros de manguito rotador del hombro durante procedimiento de revisión (procedimiento)",
+			"reparación de múltiples desgarros de manguito rotador del hombro durante procedimiento de revisión") };
+
 	@Test
 	public void testRewriteSemanticType() throws IOException {
 		final Rule r = new RewriteSemanticType(
@@ -57,6 +61,19 @@ public class TestRewriteSemanticType {
 				ResourceProvider.getRuleParameters(Delemmatizer.LANGUAGE_GERMAN,
 						"RewriteSemanticType"));
 		for (final TestPair z : pairsSemanticGerman) {
+			final TermContainer termContainer = new TermContainer(z.input,
+					Delemmatizer.LANGUAGE_GERMAN, z.isChemical);
+			assertEquals(z.expected, new HashSet<>(
+					r.apply(termContainer).getUnsuppressedTermStrings()));
+		}
+	}
+
+	@Test
+	public void testRewriteSemanticTypeSpanish() throws IOException {
+		final Rule r = new RewriteSemanticType(
+				ResourceProvider.getRuleParameters(
+						Delemmatizer.LANGUAGE_SPANISH, "RewriteSemanticType"));
+		for (final TestPair z : pairsSemanticSpanish) {
 			final TermContainer termContainer = new TermContainer(z.input,
 					Delemmatizer.LANGUAGE_GERMAN, z.isChemical);
 			assertEquals(z.expected, new HashSet<>(
