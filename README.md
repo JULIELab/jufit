@@ -18,6 +18,10 @@ Please cite [JuFiT: A Configurable Rule Engine for Filtering and Generating New 
 
 ## Usage
 ```
+java -jar <JUFIT-JAR> 
+```
+followed by
+```
  jufit <mrconso> <mrsty> <language> (--mrconso | --terms | --grounded | --complex) [--outFile=FILE] [--semanticGroup=GROUP]... [--rules=JSON] [--noFilter]
  jufit --help
  jufit --version
