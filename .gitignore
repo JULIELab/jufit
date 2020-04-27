@@ -5,3 +5,11 @@ target
 .project
 .classpath
 /.DS_Store
+*.gz
+*.txt
+*.sh
+*.RRF
+*.nlm
+*.CHK
+*.MD5
+*.zip

@@ -15,17 +15,15 @@ BSD license (2-clause).
 
 Please cite [JuFiT: A Configurable Rule Engine for Filtering and Generating New Multilingual UMLS Terms](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4765630/) when using JuFiT in your research.
 
-
 ## Usage
 ```
-java -jar <JUFIT-JAR> 
+java -jar <JuFiT-file.jar>
 ```
 followed by (on the same line)
 ```
- jufit <mrconso> <mrsty> <language> (--mrconso | --terms | --grounded | --complex) [--outFile=FILE] [--semanticGroup=GROUP]... [--rules=JSON] [--noFilter]
- jufit --help
- jufit --version
-
+ <mrconso> <mrsty> <language> (--mrconso | --terms | --grounded | --complex) [--outFile=FILE] [--semanticGroup=GROUP]  ...  [--rules=JSON] [--noFilter]
+ --help
+ --version
 Options:
 --help  Show this screen
 --version  Show the version number
@@ -44,3 +42,4 @@ We suggest updating your Java VM arguments to use at least 0.5GB of RAM, i.e., `
 
 ## Recent Changes:
   * 1.1 New output formats, new command line interface, change to license
+  * 1.2 Semantic Group definition (from https://metamap.nlm.nih.gov/Docs/SemGroups_2018.txt)
