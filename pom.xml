@@ -17,7 +17,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>JenaUmlsFilter</artifactId>
-	<version>1.2</version>
+	<version>1.2-SemanticTypes</version>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>

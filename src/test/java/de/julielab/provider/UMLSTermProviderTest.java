@@ -28,13 +28,13 @@ public class UMLSTermProviderTest {
 		assertEquals(9, terms.size());
 	}
 
-	@Test
-	public void testGetDrugOrChemicalCUIs() throws IOException {
-		final Set<String> expectedCuis = ImmutableSet.of("C0000005");
-		final Set<SemanticGroup> chems = Sets.newHashSet(SemanticGroup.CHEM);
-		assertEquals(expectedCuis, UMLSTermProvider
-				.getSemanticGroupCUIs("src/test/resources/MRSTY.test", chems));
-	}
+//	@Test
+//	public void testGetDrugOrChemicalCUIs() throws IOException {
+//		final Set<String> expectedCuis = ImmutableSet.of("C0000005");
+//		final Set<SemanticGroup> chems = Sets.newHashSet(SemanticGroup.CHEM);
+//		assertEquals(expectedCuis, UMLSTermProvider
+//				.getSemanticGroupCUIs("src/test/resources/MRSTY.test", chems));
+//	}
 
 	@Test
 	public void testProvideUMLSTermForLanguage() throws IOException {
@@ -47,18 +47,18 @@ public class UMLSTermProviderTest {
 		assertEquals(1, terms.size());
 		assertEquals(expected, terms.get(0));
 	}
-	
-	@Test
-	public void testProvideUMLSTermsOnlyPHYS() throws IOException {
-		final ProvidedTerm expected = new ProvidedTerm("C0000007",
-				"testentry", "ENG", false,
-				"C0000007|ENG|P|L6215656|PF|S7133956|Y|A11394283||M0019694|D012711|foo|EP|D012711|testentry|3|N||");
-		final List<ProvidedTerm> terms = Lists.newArrayList(UMLSTermProvider
-				.provideUMLSTerms("src/test/resources/MRCONSO.test",
-						"src/test/resources/MRSTY.test", Sets.newHashSet(SemanticGroup.PHYS), "ENG"));
-		assertEquals(1, terms.size());
-		assertEquals(expected, terms.get(0));
-	}
+
+//	@Test
+//	public void testProvideUMLSTermsOnlyPHYS() throws IOException {
+//		final ProvidedTerm expected = new ProvidedTerm("C0000007",
+//				"testentry", "ENG", false,
+//				"C0000007|ENG|P|L6215656|PF|S7133956|Y|A11394283||M0019694|D012711|foo|EP|D012711|testentry|3|N||");
+//		final List<ProvidedTerm> terms = Lists.newArrayList(UMLSTermProvider
+//				.provideUMLSTerms("src/test/resources/MRCONSO.test",
+//						"src/test/resources/MRSTY.test", Sets.newHashSet(SemanticGroup.PHYS), "ENG"));
+//		assertEquals(1, terms.size());
+//		assertEquals(expected, terms.get(0));
+//	}
 
 	@Test
 	public void testProvideUMLSTermsIsDrugOrChemical() throws IOException {

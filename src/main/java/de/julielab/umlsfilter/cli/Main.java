@@ -23,7 +23,7 @@ import org.docopt.Docopt;
 import com.google.common.collect.Streams;
 
 import de.julielab.provider.ProvidedTerm;
-import de.julielab.provider.SemanticGroup;
+import de.julielab.provider.SemanticType;
 import de.julielab.provider.UMLSTermProvider;
 import de.julielab.umlsfilter.delemmatizer.Delemmatizer;
 import de.julielab.umlsfilter.delemmatizer.OutputFormat;
@@ -35,7 +35,7 @@ public class Main {
 	private static final String doc = "Usage:\n"
 			+ " java -jar <JuFiT-file.jar> "
 			+ " followed by (on the same line)"
-			+ " <mrconso> <mrsty> <language> (--mrconso | --terms | --grounded | --complex) [--outFile=FILE] [--semanticGroup=GROUP]... [--rules=JSON] [--noFilter]\n"
+			+ " <mrconso> <mrsty> <language> (--mrconso | --terms | --grounded | --complex) [--outFile=FILE] [--semanticType=TYPE]... [--rules=JSON] [--noFilter]\n"
 			+ " --help\n" + " jufit --version\n" + "\nOptions:\n"
 			+ "--help  Show this screen\n"
 			+ "--version  Show the version number\n"
@@ -45,7 +45,8 @@ public class Main {
 			+ Delemmatizer.SEPARATOR + "\" (one format must be chosen)\n"
 			+ "--complex  complex output format providing applied rules, also writes removed terms to stderr (one format must be chosen)\n"
 			+ "--outFile=FILE  write output to this file instead of stdout\n"
-			+ "--semanticGroup=GROUP  Process only terms belonging to a semantic group (repeat for multiple)\n"
+			+ "--semanticType=TYPE  Process only terms numbers belonging to a Semantic Type (values between T001 and T204) (repeat for multiple)\n"
+			+ "(Detailed Semantic Type values: https://metamap.nlm.nih.gov/Docs/SemGroups_2018.txt)"
 			+ "--rules=JSON  file with rules to use instead of defaults (probably not a good idea)\n"
 			+ "--noFilter  Do not filter output (incompatible with --mrconso as nothing would need to be done)";
 	
@@ -62,16 +63,15 @@ public class Main {
 		}
 
 		final String jsonFile = (String) opts.get("--rules"); //may be null, respected later
-		final Set<SemanticGroup> onlyTheseSemanticGroups = new HashSet<>();
+		final Set<SemanticType> onlyTheseSemanticGroups = new HashSet<>();
 
 		try {
-			((List<String>) opts.get("--semanticGroup")).stream()
-					.map(SemanticGroup::valueOf)
+			((List<String>) opts.get("--semanticType")).stream()
+					.map(SemanticType::valueOf)
 					.forEach(onlyTheseSemanticGroups::add);
 		} catch (final IllegalArgumentException e) {
-			System.err.println(
-					"Only the following semantic group names are supported:\n"
-					+ SemanticGroup.getNames().collect(Collectors.joining(", ")));
+			System.err.println("Only UMLS Semantic Type names are supported (values between T001 and T204).\n"
+				+ "Look into the files from https://metamap.nlm.nih.gov/SemanticTypesAndGroups.shtml\n");
 			System.exit(1);
 		}
 

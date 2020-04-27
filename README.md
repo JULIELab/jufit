@@ -21,7 +21,7 @@ java -jar <JuFiT-file.jar>
 ```
 followed by (on the same line)
 ```
- <mrconso> <mrsty> <language> (--mrconso | --terms | --grounded | --complex) [--outFile=FILE] [--semanticGroup=GROUP]  ...  [--rules=JSON] [--noFilter]
+ <mrconso> <mrsty> <language> (--mrconso | --terms | --grounded | --complex) [--outFile=FILE] [--semanticType=TYPE]  ...  [--rules=JSON] [--noFilter]
  --help
  --version
 Options:
@@ -32,7 +32,8 @@ Options:
 --grounded  terms and CUIs output, separated with "|" (one format must be chosen)
 --complex  complex output format providing applied rules, also writes removed terms to stderr (one format must be chosen)
 --outFile=FILE  write output to this file instead of stdout
---semanticGroup=GROUP  Process only terms belonging to a semantic group (repeat for multiple)
+--semanticType=TYPE  Process only terms numbers belonging to a Semantic Type (values between T001 and T204) (repeat for multiple)
+(Detailed Semantic Type values: https://metamap.nlm.nih.gov/Docs/SemGroups_2018.txt)
 --rules=JSON  file with rules to use instead of defaults (probably not a good idea)
 --noFilter  Do not filter output (incompatible with --mrconso as nothing would need to be done)
 ```
