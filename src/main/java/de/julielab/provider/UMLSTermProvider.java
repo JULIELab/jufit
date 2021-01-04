@@ -41,10 +41,10 @@ public class UMLSTermProvider {
 					final String[] splitline = line.split("\\|");
 					if (semanticGroups.contains(SemanticType.getSemanticGroupForTermId(splitline[TERM_ID_INDEX])))
 					{
-//						System.out.println("splitline[TERM_ID_INDEX][CUI_INDEX]" + splitline[TERM_ID_INDEX] + " " + splitline[CUI_INDEX]);
 						cuis.add(splitline[CUI_INDEX]);
 					}
 				});
+		
 		return cuis;
 	}
 
@@ -153,14 +153,16 @@ public class UMLSTermProvider {
 			final String pathToMRCONSO, final String pathToMRSTY,
 			final boolean suppressSuppressable,
 			final Set<SemanticType> onlyTheseSemanticGroups,
-			final String... languages) throws IOException{
+			final String... languages) throws IOException
+	{
 		return provideUMLSTerms(pathToMRCONSO, pathToMRSTY, suppressSuppressable, false, onlyTheseSemanticGroups, languages);
 	}
 
 	public static Iterator<ProvidedTerm> provideUMLSTerms(
 			final String pathToMRCONSO, final String pathToMRSTY,
 			final Set<SemanticType> onlyTheseSemanticGroups,
-			final String... languages) throws IOException{
+			final String... languages) throws IOException
+	{
 		return provideUMLSTerms(pathToMRCONSO, pathToMRSTY, false, false, onlyTheseSemanticGroups, languages);
 	}
 }

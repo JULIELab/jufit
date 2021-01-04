@@ -1,0 +1,9 @@
+{
+	"pathToMRCONSO"		: "MRCONSO.RRF",
+	"pathToMRSTY"		: "MRSTY.RRF",
+	"language"			: "GER",
+	"outputFormat"		: "grounded",
+	"outFileName"		: "out-dict.txt",
+	"SemanticTypes"		: [""],
+	"SemanticGroups"	: ["ANAT,DISO"]
+}

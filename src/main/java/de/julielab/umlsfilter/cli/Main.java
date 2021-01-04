@@ -14,11 +14,9 @@ import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.docopt.Docopt;
+import java.util.stream.Stream;
 
 import com.google.common.collect.Streams;
 
@@ -32,75 +30,113 @@ public class Main {
 
 	public static final String VERSION = "1.2";
 
-	private static final String doc = "Usage:\n"
-			+ " java -jar <JuFiT-file.jar> "
-			+ " followed by (on the same line)"
-			+ " <mrconso> <mrsty> <language> (--mrconso | --terms | --grounded | --complex) [--outFile=FILE] [--semanticType=TYPE]... [--rules=JSON] [--noFilter]\n"
-			+ " --help\n" + " jufit --version\n" + "\nOptions:\n"
-			+ "--help  Show this screen\n"
-			+ "--version  Show the version number\n"
-			+ "--mrconso  MRCONSO output format (one format must be chosen)\n"
-			+ "--terms  terms only output (one format must be chosen)\n"
-			+ "--grounded  terms and CUIs output, separated with \""
-			+ Delemmatizer.SEPARATOR + "\" (one format must be chosen)\n"
-			+ "--complex  complex output format providing applied rules, also writes removed terms to stderr (one format must be chosen)\n"
-			+ "--outFile=FILE  write output to this file instead of stdout\n"
-			+ "--semanticType=TYPE  Process only terms numbers belonging to a Semantic Type (values between T001 and T204) (repeat for multiple)\n"
-			+ "(Detailed Semantic Type values: https://metamap.nlm.nih.gov/Docs/SemGroups_2018.txt)"
-			+ "--rules=JSON  file with rules to use instead of defaults (probably not a good idea)\n"
-			+ "--noFilter  Do not filter output (incompatible with --mrconso as nothing would need to be done)";
-	
-	@SuppressWarnings("unchecked")
-	public static void main(final String[] args) throws IOException {
-		final Map<String, Object> opts = new Docopt(doc).withVersion(VERSION).parse(args);
-		final String pathToMRCONSO = (String) opts.get("<mrconso>");
-		final String pathToMRSTY = (String) opts.get("<mrsty>");
-		final String language = (String) opts.get("<language>");
+	@SuppressWarnings({ "unchecked", "null" })
+	public static void main(final String[] args) throws IOException 
+	{
+		String jsonFile = args[0];
+		JuFiTJsonProperties jufitProperties = JuFiTJsonReader.getRunConfigurations(jsonFile);
 
-		if (language.length() != 3) {
-			System.err.println("Only 3 letter languages codes supported, e.g., ENG for English");
-			System.exit(1);
+		final String pathToMRCONSO			= jufitProperties.getPathToMRCONSO();
+		final String pathToMRSTY			= jufitProperties.getPathToMRSTY();
+		final String language				= jufitProperties.getLanguage();
+		final String outFileName			= jufitProperties.getOutFileName();
+		final List<String> semanticGroups	= jufitProperties.getSemanticGroups();
+		final List<String> semanticTypes	= jufitProperties.getSemanticTypes();
+
+		System.out.println("RUNNING JuFiT -- the Jena UMLS Filter Tool");
+		System.out.println("READING json pararmeter input file: '"	+ jsonFile + "'");
+		System.out.println("path to MRSTY: '"						+ pathToMRSTY + "'");
+		System.out.println("path to MRCONSO: '"						+ pathToMRCONSO + "'");
+		System.out.println("language: '"							+ language + "'");
+		System.out.println("output file: '"							+ outFileName + "'");
+
+		final Set<SemanticType> onlyTheseSemanticTypes = new HashSet<>();
+
+		try
+		{
+			jufitProperties.getSemanticTypes().stream().map(SemanticType::valueOf).forEach(onlyTheseSemanticTypes::add);
+			System.out.println("Semantic Types: "					+ semanticTypes);
+		}
+		catch (final IllegalArgumentException e)
+		{
+			if (onlyTheseSemanticTypes.isEmpty())
+			{
+				System.out.println("Semantic Types: empty");
+			}
+			else
+			{
+				System.err.println("Only UMLS Semantic Type names are supported (values between T001 and T204).\n"
+						+ "Look into the files from https://metamap.nlm.nih.gov/SemanticTypesAndGroups.shtml\n");
+					System.exit(1);
+			}
 		}
 
-		final String jsonFile = (String) opts.get("--rules"); //may be null, respected later
-		final Set<SemanticType> onlyTheseSemanticGroups = new HashSet<>();
+		if (!(semanticGroups.isEmpty()))
+		{
+			System.out.println("Semantic Groups: "					+ semanticGroups);
 
-		try {
-			((List<String>) opts.get("--semanticType")).stream()
-					.map(SemanticType::valueOf)
-					.forEach(onlyTheseSemanticGroups::add);
-		} catch (final IllegalArgumentException e) {
-			System.err.println("Only UMLS Semantic Type names are supported (values between T001 and T204).\n"
-				+ "Look into the files from https://metamap.nlm.nih.gov/SemanticTypesAndGroups.shtml\n");
-			System.exit(1);
+			for (int i = 0; i < semanticGroups.size(); i++)
+			{
+				Stream<SemanticType> value_semantic_types = Stream.of(SemanticType.values());//.map(SemanticType::name);
+				String semanticGroup = semanticGroups.get(i);
+				Stream<SemanticType> valuesSemanticGroups = value_semantic_types.filter(e -> e.semanticGroup.equals(semanticGroup));
+				for (Iterator<SemanticType> j = valuesSemanticGroups.iterator(); j.hasNext();)
+				{
+					SemanticType element = j.next();
+					onlyTheseSemanticTypes.add(element);
+				}
+			}
+		}
+		else
+		{
+			System.out.println("Your given Set of 'Semantic Groups' is empty.");
+		}
+
+
+
+		if ((semanticGroups.isEmpty()) && (semanticTypes.isEmpty()))
+		{
+			System.out.println("Processing all Semantic Groups / Semantic Types.");
+			Stream.of(onlyTheseSemanticTypes).forEach(n -> System.out.println(n));
 		}
 
 		OutputFormat outputFormat = null;
-		if ((boolean) opts.get("--mrconso")){
+		if (jufitProperties.getOutputFormat().equals("-mrconso"))
+		{
 			outputFormat = OutputFormat.MRCONSO;
 		}
-		else if ((boolean) opts.get("--terms")){
+		else if (jufitProperties.getOutputFormat().equals("terms"))
+		{
 			outputFormat = OutputFormat.TERMS;
 		}
-		else if ((boolean) opts.get("--grounded")){
+		else if (jufitProperties.getOutputFormat().equals("grounded"))
+		{
 			outputFormat = OutputFormat.GROUNDED_TERMS;
 		}
-			else if ((boolean) opts.get("--complex")){
+		else if (jufitProperties.getOutputFormat().equals("complex"))
+		{
 			outputFormat = OutputFormat.COMPLEX;
 		}
-		if (outputFormat == null){
+		else if (outputFormat.equals(null))
+		{
 			throw new IllegalArgumentException("No valid output format selected!");
 		}
 
-		final boolean applyFilters = !(boolean) opts.get("--noFilter");
-		if (!applyFilters && (OutputFormat.MRCONSO == outputFormat)){
-			throw new IllegalArgumentException("Applying no filtering while producing MRCONSO format is pointless");
-		}
-
-		final String outFileName = (String) opts.get("--outFile"); //may be null, respected later
-		if(null != outFileName){
+		if (!(outFileName.equals(null)))
+		{
 			System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(outFileName)), true));
 		}
+		final boolean applyFilters = false;
+//		final boolean applyFilters = !(boolean) opts.get("--noFilter");
+//		if (!applyFilters && (OutputFormat.MRCONSO == outputFormat))
+//		{
+//			throw new IllegalArgumentException("Applying no filtering while producing MRCONSO format is pointless");
+//		}
+
+//		final String outFileName = (String) opts.get("--outFile"); //may be null, respected later
+//		if(null != outFileName){
+//			System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(outFileName)), true));
+//		}
 
 		//Iterate over UMLS to generate list of existing terms
 		//TODO Currently respects pre-existing terms of all semantic groups, even those later ignored. Trivial change, unsure what is expected behavior?
@@ -110,8 +146,15 @@ public class Main {
 
 		//Prepare to iterate over UMLS again, this time respecting group restrictions (if any)
 		final Iterator<ProvidedTerm> iterator =
-			UMLSTermProvider.provideUMLSTerms(pathToMRCONSO, pathToMRSTY, true, onlyTheseSemanticGroups, language);
+			UMLSTermProvider.provideUMLSTerms(pathToMRCONSO, pathToMRSTY, true, onlyTheseSemanticTypes, language);
 
-		Delemmatizer.delemmatize(iterator, outputFormat, existingTerms, jsonFile, language, applyFilters);
+		Delemmatizer.delemmatize(
+				iterator,
+				outputFormat,
+				existingTerms,
+				jsonFile,
+				language,
+				applyFilters
+				);
 	}
 }

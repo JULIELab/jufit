@@ -6,6 +6,10 @@
  */
 package de.julielab.umlsfilter.delemmatizer;
 
-public enum OutputFormat {
-	MRCONSO, TERMS, GROUNDED_TERMS, COMPLEX;
+public enum OutputFormat
+{
+	MRCONSO,
+	TERMS,
+	GROUNDED_TERMS,
+	COMPLEX;
 }

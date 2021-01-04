@@ -62,17 +62,24 @@ public class Delemmatizer {
 	 *            Flas to apply filtering mechanisms
 	 * @throws IOException
 	 */
-	public static void delemmatize(final Iterator<ProvidedTerm> iterator,
-			final OutputFormat outputFormat, final Set<String> existingTerms,
-			final String jsonRuleFile, final String language,
-			final boolean applyFilters) throws IOException {
+	public static void delemmatize(
+			final Iterator<ProvidedTerm> iterator,
+			final OutputFormat outputFormat,
+			final Set<String> existingTerms,
+			final String jsonRuleFile,
+			final String language,
+			final boolean applyFilters) throws IOException
+	{
 		final Delemmatizer d = new Delemmatizer();
 
 		if (jsonRuleFile != null)
+		{
 			ResourceProvider.setLanguageRule(language, jsonRuleFile);
+		}
 		final Set<String> alreadyPrinted = new HashSet<>();
 
-		while (iterator.hasNext()) {
+		while (iterator.hasNext())
+		{
 			final ProvidedTerm providedTerm = iterator.next();
 			final TermContainer cleanedTerms = applyFilters
 					? d.delemmatizeTerm(providedTerm.getTerm(),
@@ -80,55 +87,99 @@ public class Delemmatizer {
 							providedTerm.isChemicalOrDrug(), existingTerms)
 					: null;
 
-			if (OutputFormat.MRCONSO == outputFormat) {
+			if (OutputFormat.MRCONSO == outputFormat)
+			{
 				if (!applyFilters)
+				{
 					throw new IllegalArgumentException();
+				}
+				
 				for (final TermWithSource term : cleanedTerms.getRawTerms())
+				{
+					System.out.println("term.getTerm() " + term.getTerm());
+					
 					if (!term.getIsSupressed())
+					{
 						if (term.getModifiedByRulesString().equals(""))
-							System.out
-									.println(providedTerm.getOriginalMRCONSO());
+						{
+							System.out.println(providedTerm.getOriginalMRCONSO());
+						}
 						else
+						{
 							System.out.println(providedTerm.getUpdatedMRCONSO(
 									term.getTerm(),
-									term.getModifiedByRulesString()));
-			} else if (OutputFormat.TERMS == outputFormat) {
+									term.getModifiedByRulesString())
+									);
+						}
+					}
+				}
+			}
+			else if (OutputFormat.TERMS == outputFormat)
+			{
 				if (!applyFilters)
+				{
 					printTerm(providedTerm.getTerm(), alreadyPrinted);
+				}
 				else
+				{
 					for (final TermWithSource term : cleanedTerms.getRawTerms())
+					{
 						if (!term.getIsSupressed())
+						{
 							printTerm(term.getTerm(), alreadyPrinted);
-			} else if (OutputFormat.GROUNDED_TERMS == outputFormat) {
+						}
+					}
+				}
+			}
+			else if (OutputFormat.GROUNDED_TERMS == outputFormat)
+			{
 				if (!applyFilters)
-					printGroundedTerm(providedTerm.getTerm(),
-							providedTerm.getCui(), alreadyPrinted);
+				{
+					printGroundedTerm(providedTerm.getTerm(), providedTerm.getCui(), alreadyPrinted);
+				}
 				else
+				{
 					for (final TermWithSource term : cleanedTerms.getRawTerms())
+					{
 						if (!term.getIsSupressed())
+						{
 							printGroundedTerm(term.getTerm(),
 									providedTerm.getCui(), alreadyPrinted);
-			} else if (OutputFormat.COMPLEX == outputFormat) {
+						}
+					}
+				}
+			}
+			else if (OutputFormat.COMPLEX == outputFormat)
+			{
 				final String cui = providedTerm.getCui();
 				if (!applyFilters)
-					printGazetteerString(providedTerm.getTerm(), cui,
-							providedTerm.getTerm() + "---NONE", alreadyPrinted);
+				{
+					printGazetteerString(providedTerm.getTerm(), cui, providedTerm.getTerm() + "---NONE", alreadyPrinted);
+				}
+
 				else
+				{
 					for (final TermWithSource term : cleanedTerms.getRawTerms())
+					{
 						if (term.getIsSupressed())
-							System.err.printf("Deleted:\t%s\t%s\t%s\n",
-									term.getTerm(), cui,
-									term.getModifiedByRulesString());
+						{
+							System.err.printf("Deleted:\t%s\t%s\t%s\n", term.getTerm(), cui, term.getModifiedByRulesString());
+						}
 						else if (!term.getModifiedByRulesString().equals(""))
-							printGazetteerString(term.getTerm(), cui,
-									providedTerm.getTerm() + "---"
-											+ term.getModifiedByRulesString(),
-									alreadyPrinted);
+						{
+							printGazetteerString(term.getTerm(), cui, providedTerm.getTerm() + "---" + term.getModifiedByRulesString(), alreadyPrinted);
+						}
 						else
-							printGazetteerString(term.getTerm(), cui, "",
-									alreadyPrinted);
-			} else
+						{
+							printGazetteerString(term.getTerm(), cui, "", alreadyPrinted);
+						}
+					}
+				}
+			}
+			else
+			{
 				throw new IllegalArgumentException();
+			}
 		}
 
 	}
