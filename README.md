@@ -10,6 +10,9 @@ You need files from the UMLS. After registration at [UTS](https:/uts.nlm.nih.gov
 
 More information on the UMLS can be found in the [UMLS® Reference Manual](https://www.ncbi.nlm.nih.gov/books/NBK9676/).
 
+### Note January 2021
+**We modify JuFiT. One of the new features is the removement of all docopt statements and a new configuration file `jufit_config.json` including all input statements for the filter tool. We adapt the tool step by step and will update new features as soon as possible.**
+
 ### License
 BSD license (2-clause). 
 
@@ -17,26 +20,10 @@ Please cite [JuFiT: A Configurable Rule Engine for Filtering and Generating New 
 
 ## Usage
 ```
-java -jar <JuFiT-file.jar>
+java -jar <JuFiT-file.jar> jufit_config.json
 ```
 followed by (on the same line)
-```
- <mrconso> <mrsty> <language> (--mrconso | --terms | --grounded | --complex) [--outFile=FILE] [--semanticType=TYPE]  ...  [--rules=JSON] [--noFilter]
- --help
- --version
-Options:
---help  Show this screen
---version  Show the version number
---mrconso  MRCONSO output format (one format must be chosen)
---terms  terms only output (one format must be chosen)
---grounded  terms and CUIs output, separated with "|" (one format must be chosen)
---complex  complex output format providing applied rules, also writes removed terms to stderr (one format must be chosen)
---outFile=FILE  write output to this file instead of stdout
---semanticType=TYPE  Process only terms numbers belonging to a Semantic Type (values between T001 and T204) (repeat for multiple)
-(Detailed Semantic Type values: https://metamap.nlm.nih.gov/Docs/SemGroups_2018.txt)
---rules=JSON  file with rules to use instead of defaults (probably not a good idea)
---noFilter  Do not filter output (incompatible with --mrconso as nothing would need to be done)
-```
+
 Languages must be given as three letter abbreviations, e.g., `ENG`, `GER`, `SPA`, `FRE` or `DUT`
 
 We suggest updating your Java VM arguments to use at least 0.5GB of RAM, i.e., `-Xmx512M`
