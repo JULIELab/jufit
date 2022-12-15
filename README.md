@@ -1,5 +1,7 @@
 # JuFiT - Jena UMLS Filter
 
+[![DOI](https://zenodo.org/badge/32086946.svg)](https://zenodo.org/badge/latestdoi/32086946)
+
 This is the Jena UMLS Filter Tool (JuFiT), a rule-based open-source tool to filter and enhance entries of the Unified Medical Language System (UMLS). JuFiT uses rules similar to those in MetaMap and Casper, but extends these by adding support for multiple languages and their language-specific phenomena, e.g., German compounds. We provide rules for English, Spanish, French, German, and Dutch, yet the declarative implementation of these rules makes it possible to add support for further languages without changing JuFiT’s source code.
 
 ## Note before usage
