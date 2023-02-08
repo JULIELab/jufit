@@ -1,6 +1,6 @@
 /**
- * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015-2018 JULIE LAB
- * Authors: Johannes Hellrich and Sven Buechel
+ * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015-2023 JULIE LAB
+ * Authors: Johannes Hellrich and Sven Buechel and Christina Lohr
  *
  * This program is free software, see the accompanying LICENSE file for details.
  */
@@ -14,7 +14,6 @@ public class ProvidedTerm {
 	private final String cui;
 	private final String term;
 	private final String languageLong;
-	// private final String languageShort;
 	private final boolean chemicalOrDrug;
 	private final String originalMRCONSO;
 
@@ -23,17 +22,17 @@ public class ProvidedTerm {
 	 */
 	public ProvidedTerm(final String cui, final String term,
 			final String language, final boolean isChemicalOrDrug,
-			final String originalMRCONSO) {
+			final String originalMRCONSO)
+	{
 		this.cui = cui;
 		this.term = term;
 		languageLong = language;
-		// this.languageShort =LanguageMapper.convertLanguageUmls2Obo(language);
 		chemicalOrDrug = isChemicalOrDrug;
 		this.originalMRCONSO = originalMRCONSO;
 	}
 
 	@Override
-	public boolean equals(final Object obj) {
+	public boolean equals(final Object obj){
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -68,10 +67,6 @@ public class ProvidedTerm {
 	public String getLanguageLong() {
 		return languageLong;
 	}
-
-	// public String getLanguageShort() {
-	// return languageShort;
-	// }
 
 	public String getOriginalMRCONSO() {
 		return originalMRCONSO;

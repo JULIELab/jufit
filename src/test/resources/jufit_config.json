@@ -1,0 +1,9 @@
+{
+	"pathToMRCONSO"		: "MRCONSO.RRF",
+	"pathToMRSTY"		: "MRSTY.RRF",
+	"language"			: "GER",
+	"outputFormat"		: "grounded",
+	"outFileName"		: "ANAT.txt",
+	"SemanticTypes"		: [""],
+	"SemanticGroups"	: ["ANAT"]
+}

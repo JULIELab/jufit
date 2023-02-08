@@ -1,9 +1,10 @@
 /**
- * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015-2018 JULIE LAB
- * Authors: Johannes Hellrich and Sven Buechel
+ * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015-2023 JULIE LAB
+ * Authors: Johannes Hellrich and Sven Buechel and Christina Lohr
  *
  * This program is free software, see the accompanying LICENSE file for details.
  */
+
 package de.julielab.umlsfilter.config;
 
 import java.io.BufferedReader;
@@ -35,18 +36,15 @@ public class ResourceProvider {
 	 * @throws IOException
 	 *             if file not found
 	 */
-	private static void fillLanguageDependentResources() throws IOException {
-		if (MapLanguages.isEmpty()) {
-			MapLanguages.put(Delemmatizer.LANGUAGE_GERMAN,
-					readResourcesFromFile(Delemmatizer.LANGUAGE_GERMAN));
-			MapLanguages.put(Delemmatizer.LANGUAGE_ENLGLISH,
-					readResourcesFromFile(Delemmatizer.LANGUAGE_ENLGLISH));
-			MapLanguages.put(Delemmatizer.LANGUAGE_SPANISH,
-					readResourcesFromFile(Delemmatizer.LANGUAGE_SPANISH));
-			MapLanguages.put(Delemmatizer.LANGUAGE_FRENCH,
-					readResourcesFromFile(Delemmatizer.LANGUAGE_FRENCH));
-			MapLanguages.put(Delemmatizer.LANGUAGE_DUTCH,
-					readResourcesFromFile(Delemmatizer.LANGUAGE_DUTCH));
+	private static void fillLanguageDependentResources() throws IOException
+	{
+		if (MapLanguages.isEmpty())
+		{
+			MapLanguages.put(Delemmatizer.LANGUAGE_GERMAN, readResourcesFromFile(Delemmatizer.LANGUAGE_GERMAN));
+			MapLanguages.put(Delemmatizer.LANGUAGE_ENLGLISH, readResourcesFromFile(Delemmatizer.LANGUAGE_ENLGLISH));
+			MapLanguages.put(Delemmatizer.LANGUAGE_SPANISH,	readResourcesFromFile(Delemmatizer.LANGUAGE_SPANISH));
+			MapLanguages.put(Delemmatizer.LANGUAGE_FRENCH, readResourcesFromFile(Delemmatizer.LANGUAGE_FRENCH));
+			MapLanguages.put(Delemmatizer.LANGUAGE_DUTCH, readResourcesFromFile(Delemmatizer.LANGUAGE_DUTCH));
 		}
 	}
 

@@ -1,3 +1,10 @@
+/**
+ * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015-2023 JULIE LAB
+ * Authors: Johannes Hellrich and Sven Buechel and Christina Lohr
+ *
+ * This program is free software, see the accompanying LICENSE file for details.
+ */
+
 package de.julielab.umlsfilter.cli;
 
 import java.io.FileNotFoundException;
@@ -27,50 +34,22 @@ public class JuFiTJsonReaderMultiRun
 	{
 		JSONParser jsonConfigparser = new JSONParser();
 		JuFiTJsonProperties jufitProperties = new JuFiTJsonProperties();
-	
+
 		try
 		{
 			Object obj = jsonConfigparser.parse(new FileReader(jsonFile));
 			JSONObject jsonObject = (JSONObject) obj;
 			System.out.println(jsonObject.get("run_jufit"));
-			
-			
+
 			JSONArray runs = (JSONArray) jsonObject.get("run_jufit");
 			System.out.println(runs.size());
-			
+
 			for (int i = 0; i < runs.size(); i++)
 			{
 				System.out.println(runs.get(i));
 			}
-			
-			
 		}
-		
-//		try
-//		{
-//			Object obj = jsonConfigparser.parse(new FileReader(jsonFile));
-//			JSONObject jsonObject = (JSONObject) obj;
-//
-//			jufitProperties.setPathToMRCONSO(jsonObject.get("pathToMRCONSO").toString());
-//			jufitProperties.setPathToMRSTY(jsonObject.get("pathToMRSTY").toString());
-//			jufitProperties.setLanguage(jsonObject.get("language").toString());
-//			jufitProperties.setOutFileName(jsonObject.get("outFileName").toString());
-//			jufitProperties.setOutputFormat(jsonObject.get("outputFormat").toString());
-//
-//			JSONArray arraySemanticGroups = (JSONArray) jsonObject.get("SemanticGroups");
-//			List<String> semanticGroups = IntStream.range(0, arraySemanticGroups.size())
-//					.mapToObj(arraySemanticGroups::get)
-//					.map(Object::toString)
-//					.collect(Collectors.toList());
-//			jufitProperties.setSemanticGroups(semanticGroups);
-//
-//			JSONArray arraySemanticTypes = (JSONArray) jsonObject.get("SemanticTypes");
-//			List<String> semanticTypes = IntStream.range(0, arraySemanticTypes.size())
-//					.mapToObj(arraySemanticTypes::get)
-//					.map(Object::toString)
-//					.collect(Collectors.toList());
-//			jufitProperties.setSemanticTypes(semanticTypes);
-//		}
+
 		catch (Exception e)
 		{
 			System.out.println("Cannot read the json file '" + jsonFile + "'. Check your file and path.");

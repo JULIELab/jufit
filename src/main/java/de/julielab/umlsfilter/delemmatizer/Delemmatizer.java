@@ -1,5 +1,5 @@
 /**
- * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015-2018 JULIE LAB
+ * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015-2023 JULIE LAB
  * Authors: Johannes Hellrich and Sven Buechel
  *
  * This program is free software, see the accompanying LICENSE file for details.
@@ -27,8 +27,7 @@ public class Delemmatizer {
 
 	public static final String SEPARATOR = "|";
 
-	private final static Matcher punctuation = Pattern.compile("\\p{Punct}")
-			.matcher("");
+	private final static Matcher punctuation = Pattern.compile("\\p{Punct}").matcher("");
 
 	private final static Matcher space = Pattern.compile("\\s").matcher("");
 
@@ -143,8 +142,7 @@ public class Delemmatizer {
 					{
 						if (!term.getIsSupressed())
 						{
-							printGroundedTerm(term.getTerm(),
-									providedTerm.getCui(), alreadyPrinted);
+							printGroundedTerm(term.getTerm(), providedTerm.getCui(), alreadyPrinted);
 						}
 					}
 				}
@@ -221,8 +219,7 @@ public class Delemmatizer {
 		final String cuiAndTerm = cui + regularizeTerm(term);
 		if (!alreadyPrinted.contains(cuiAndTerm)) {
 			alreadyPrinted.add(cuiAndTerm);
-			System.out.println(
-					String.format("%s\tUMLS@@%s@@%s@@ANY", term, cui, rule));
+			System.out.println(String.format("%s\tUMLS@@%s@@%s@@ANY", term, cui, rule));
 		}
 	}
 

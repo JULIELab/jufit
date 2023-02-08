@@ -1,6 +1,6 @@
 /**
- * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015-2020 JULIE LAB
- * Authors: Johannes Hellrich, Sven Buechel, Christina Lohr
+ * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015-2023 JULIE LAB
+ * Authors: Johannes Hellrich and Sven Buechel and Christina Lohr
  *
  * This program is free software, see the accompanying LICENSE file for details.
  */

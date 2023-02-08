@@ -1,6 +1,6 @@
 /**
- * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015-2018 JULIE LAB
- * Authors: Johannes Hellrich and Sven Buechel
+ * This is JUFIT, the Jena UMLS Filter Copyright (C) 2015-2023 JULIE LAB
+ * Authors: Johannes Hellrich and Sven Buechel and Christina Lohr
  *
  * This program is free software, see the accompanying LICENSE file for details.
  */
@@ -8,6 +8,7 @@
 package de.julielab.umlsfilter.cli;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -26,8 +27,8 @@ import de.julielab.provider.UMLSTermProvider;
 import de.julielab.umlsfilter.delemmatizer.Delemmatizer;
 import de.julielab.umlsfilter.delemmatizer.OutputFormat;
 
-public class Main {
-
+public class Main
+{
 	public static final String VERSION = "1.2";
 
 	@SuppressWarnings({ "unchecked", "null" })
@@ -36,32 +37,63 @@ public class Main {
 		String jsonFile = args[0];
 		JuFiTJsonProperties jufitProperties = JuFiTJsonReader.getRunConfigurations(jsonFile);
 
-		final String pathToMRCONSO			= jufitProperties.getPathToMRCONSO();
-		final String pathToMRSTY			= jufitProperties.getPathToMRSTY();
-		final String language				= jufitProperties.getLanguage();
-		final String outFileName			= jufitProperties.getOutFileName();
-		final List<String> semanticGroups	= jufitProperties.getSemanticGroups();
-		final List<String> semanticTypes	= jufitProperties.getSemanticTypes();
+		System.out.println("-- RUNNING JuFiT -- the Jena UMLS Filter Tool --");
+		System.out.println("READING input pararmeters from " + jsonFile);
 
-		System.out.println("RUNNING JuFiT -- the Jena UMLS Filter Tool");
-		System.out.println("READING json pararmeter input file: '"	+ jsonFile + "'");
-		System.out.println("path to MRSTY: '"						+ pathToMRSTY + "'");
-		System.out.println("path to MRCONSO: '"						+ pathToMRCONSO + "'");
-		System.out.println("language: '"							+ language + "'");
-		System.out.println("output file: '"							+ outFileName + "'");
+		final String pathToMRCONSO = jufitProperties.getPathToMRCONSO();
+		if (new File(pathToMRCONSO).exists()) 
+		{
+			System.out.println("path to MRCONSO file: " + pathToMRCONSO);
+		}
+		else
+		{
+			System.err.println("path to MRCONSO file: " + pathToMRCONSO + " is wrong.  JuFiT is aborted.");
+			System.exit(1);
+		}
 
+		final String pathToMRSTY = jufitProperties.getPathToMRSTY();
+		if (new File(pathToMRSTY).exists()) 
+		{
+			System.out.println("path to MRSTY file:   " + pathToMRSTY);
+		}
+		else
+		{
+			System.err.println("path to MRSTY file: " + pathToMRSTY + " is wrong.  JuFiT is aborted.");
+			System.exit(1);
+		}
+
+		final String language = jufitProperties.getLanguage();
+		if (language != "")
+		{
+			System.out.println("language:             " + language);
+		}
+		else
+		{
+			System.err.println("Define a language. JuFiT is aborted.");
+			System.exit(1);
+		}
+
+		final List<String> semanticTypes    = jufitProperties.getSemanticTypes();
 		final Set<SemanticType> onlyTheseSemanticTypes = new HashSet<>();
 
 		try
 		{
 			jufitProperties.getSemanticTypes().stream().map(SemanticType::valueOf).forEach(onlyTheseSemanticTypes::add);
-			System.out.println("Semantic Types: "					+ semanticTypes);
+			
+			if (semanticTypes.isEmpty())
+			{
+				System.out.println("Semantic Types:       empty");
+			}
+			else
+			{
+				System.out.println("Semantic Types:       " + semanticTypes);
+			}
 		}
 		catch (final IllegalArgumentException e)
 		{
 			if (onlyTheseSemanticTypes.isEmpty())
 			{
-				System.out.println("Semantic Types: empty");
+				System.out.println("Semantic Types:       empty");
 			}
 			else
 			{
@@ -71,13 +103,14 @@ public class Main {
 			}
 		}
 
+		final List<String> semanticGroups   = jufitProperties.getSemanticGroups();
 		if (!(semanticGroups.isEmpty()))
 		{
-			System.out.println("Semantic Groups: "					+ semanticGroups);
+			System.out.println("Semantic Groups:      " + semanticGroups);
 
 			for (int i = 0; i < semanticGroups.size(); i++)
 			{
-				Stream<SemanticType> value_semantic_types = Stream.of(SemanticType.values());//.map(SemanticType::name);
+				Stream<SemanticType> value_semantic_types = Stream.of(SemanticType.values());
 				String semanticGroup = semanticGroups.get(i);
 				Stream<SemanticType> valuesSemanticGroups = value_semantic_types.filter(e -> e.semanticGroup.equals(semanticGroup));
 				for (Iterator<SemanticType> j = valuesSemanticGroups.iterator(); j.hasNext();)
@@ -89,19 +122,16 @@ public class Main {
 		}
 		else
 		{
-			System.out.println("Your given Set of 'Semantic Groups' is empty.");
+			System.out.println("Semantic Groups:      empty");
 		}
-
-
 
 		if ((semanticGroups.isEmpty()) && (semanticTypes.isEmpty()))
 		{
-			System.out.println("Processing all Semantic Groups / Semantic Types.");
-			Stream.of(onlyTheseSemanticTypes).forEach(n -> System.out.println(n));
+			System.out.println("  --> Processing all Semantic Groups and Semantic Types.");
 		}
 
 		OutputFormat outputFormat = null;
-		if (jufitProperties.getOutputFormat().equals("-mrconso"))
+		if (jufitProperties.getOutputFormat().equals("mrconso"))
 		{
 			outputFormat = OutputFormat.MRCONSO;
 		}
@@ -122,24 +152,23 @@ public class Main {
 			throw new IllegalArgumentException("No valid output format selected!");
 		}
 
+		System.out.println("output format:        " + outputFormat);
+
+		final String outFileName            = jufitProperties.getOutFileName();
+		System.out.println("path to output file:  " + outFileName);
+
+		final boolean applyFilters = jufitProperties.getApplyFilters();
+		System.out.println("getApplyFilters:  " + applyFilters);
+
+		final String jsonRulesFile = jufitProperties.getRulesFileName();
+		System.out.println("getRulesFileName " + jsonRulesFile);
+
 		if (!(outFileName.equals(null)))
 		{
-			System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(outFileName)), true));
+			System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(outFileName)), true, "UTF-8"));
 		}
-		final boolean applyFilters = false;
-//		final boolean applyFilters = !(boolean) opts.get("--noFilter");
-//		if (!applyFilters && (OutputFormat.MRCONSO == outputFormat))
-//		{
-//			throw new IllegalArgumentException("Applying no filtering while producing MRCONSO format is pointless");
-//		}
-
-//		final String outFileName = (String) opts.get("--outFile"); //may be null, respected later
-//		if(null != outFileName){
-//			System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(outFileName)), true));
-//		}
 
 		//Iterate over UMLS to generate list of existing terms
-		//TODO Currently respects pre-existing terms of all semantic groups, even those later ignored. Trivial change, unsure what is expected behavior?
 		final Set<String> existingTerms = Streams
 			.stream(UMLSTermProvider.provideUMLSTerms(pathToMRCONSO, pathToMRSTY, true, null, language))
 			.map(ProvidedTerm::getTerm).collect(Collectors.toSet());
@@ -148,13 +177,6 @@ public class Main {
 		final Iterator<ProvidedTerm> iterator =
 			UMLSTermProvider.provideUMLSTerms(pathToMRCONSO, pathToMRSTY, true, onlyTheseSemanticTypes, language);
 
-		Delemmatizer.delemmatize(
-				iterator,
-				outputFormat,
-				existingTerms,
-				jsonFile,
-				language,
-				applyFilters
-				);
+		Delemmatizer.delemmatize(iterator, outputFormat, existingTerms, jsonRulesFile, language, applyFilters);
 	}
 }

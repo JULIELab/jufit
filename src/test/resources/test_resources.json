@@ -1,15 +1,45 @@
 {
-	"rules" : [ 
-		"RewriteShortFormLongForm", "DeleteIfContainsDosage", "DeleteIfContainsAtSign", "DeleteIfContainsECNumber",
-	 	"DeleteIfContainsClassification", "DeleteIfContainsUnderspecification", "DeleteIfContainsMisc", "DeleteShortToken", 
-	 	"RewriteParentheticals",  "RewriteSemanticType", "RewriteSyntacticInversion", "RewriteApostropheS", "DeleteLongTerm"
-	 ],
-	"ruleParameters":{
-		"DeleteIfContainsClassification": {
-			"pattern" : [",\\s*NEC$", " \\(NEC\\)$", " \\[NEC\\]$", "(?i)not elsewhere classified", "(?i)unclassified", "(i?)without mention"]
-		},
-		"DeleteIfContainsUnderspecification": {
-			"pattern" : [",\\s*NOS$", " \\(NOS\\)$", " \\[NOS\\]$", "(?i)not otherwise specified", "(?i)not specified", "(?i)unspecified"]
-		}
-	}
+    "rules":
+    [ 
+        "RewriteShortFormLongForm",
+        "DeleteIfContainsDosage",
+        "DeleteIfContainsAtSign",
+        "DeleteIfContainsECNumber",
+        "DeleteIfContainsClassification",
+        "DeleteIfContainsUnderspecification",
+        "DeleteIfContainsMisc",
+        "DeleteShortToken", 
+        "RewriteParentheticals",
+        "RewriteSemanticType",
+        "RewriteSyntacticInversion",
+        "RewriteApostropheS",
+        "DeleteLongTerm"
+    ],
+    "ruleParameters":
+    {
+        "DeleteIfContainsClassification":
+        {
+            "pattern":
+            [
+                ",\\s*NEC$",
+                " \\(NEC\\)$",
+                " \\[NEC\\]$",
+                "(?i)not elsewhere classified",
+                "(?i)unclassified",
+                "(i?)without mention"
+            ]
+        },
+        "DeleteIfContainsUnderspecification":
+        {
+            "pattern" :
+            [
+                ",\\s*NOS$",
+                " \\(NOS\\)$",
+                " \\[NOS\\]$",
+                "(?i)not otherwise specified",
+                "(?i)not specified",
+                "(?i)unspecified"
+            ]
+        }
+    }
 }

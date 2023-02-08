@@ -1,9 +1,11 @@
 {
-	"pathToMRCONSO"		: "MRCONSO.RRF",
-	"pathToMRSTY"		: "MRSTY.RRF",
-	"language"			: "GER",
-	"outputFormat"		: "grounded",
-	"outFileName"		: "out-dict.txt",
-	"SemanticTypes"		: [""],
-	"SemanticGroups"	: ["ANAT,DISO"]
+  "pathToMRCONSO"  : "MRCONSO.RRF",
+  "pathToMRSTY"    : "MRSTY.RRF",
+  "language"       : "JPN",
+  "SemanticTypes"  : ["T203", "T074"],
+  "SemanticGroups" : [],
+  "applyFilters"   : "true",
+  "rulesFileName"  : "JuFiT_rules.json",
+  "outputFormat"   : "grounded",
+  "outFileName"    : "JuFiT_dictionary.txt"
 }
