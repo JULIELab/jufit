@@ -18,12 +18,9 @@ import com.google.common.collect.Sets;
 public class RewriteSemanticType extends Rule {
 
 	private static final String RULENAME = "SEM";
-	private final Matcher inRoundParenthesesMatcher = Pattern
-			.compile("(?<withPar>\\((?<inPar>[^\\)]*)\\)$)").matcher("");
-	private final Matcher inSquareParenthesesMatcher = Pattern
-			.compile("(?<withPar>\\[(?<inPar>[^\\]]*)\\]$)").matcher("");
-	private final Matcher inAngularParenthesesMatcher = Pattern
-			.compile("(?<withPar><(?<inPar>[^>]*)>$)").matcher("");
+	private final Matcher inRoundParenthesesMatcher = Pattern.compile("(?<withPar>\\((?<inPar>[^\\)]*)\\)$)").matcher("");
+	private final Matcher inSquareParenthesesMatcher = Pattern.compile("(?<withPar>\\[(?<inPar>[^\\]]*)\\]$)").matcher("");
+	private final Matcher inAngularParenthesesMatcher = Pattern.compile("(?<withPar><(?<inPar>[^>]*)>$)").matcher("");
 	private final Set<String> toRemoveRound;
 	private final Set<String> toRemoveSquare;
 	private final Set<String> toRemoveAngular;
@@ -36,16 +33,12 @@ public class RewriteSemanticType extends Rule {
 	public RewriteSemanticType(final String[] semanticTypes1,
 			final String[] semanticTypes2, final String[] semanticTypes3) {
 		super(RULENAME);
-		toRemoveRound = (semanticTypes1 == null) ? new HashSet<>()
-				: Sets.newHashSet(semanticTypes1);
-		toRemoveSquare = (semanticTypes2 == null) ? new HashSet<>()
-				: Sets.newHashSet(semanticTypes2);
-		toRemoveAngular = (semanticTypes3 == null) ? new HashSet<>()
-				: Sets.newHashSet(semanticTypes3);
+		toRemoveRound = (semanticTypes1 == null) ? new HashSet<>() : Sets.newHashSet(semanticTypes1);
+		toRemoveSquare = (semanticTypes2 == null) ? new HashSet<>() : Sets.newHashSet(semanticTypes2);
+		toRemoveAngular = (semanticTypes3 == null) ? new HashSet<>() : Sets.newHashSet(semanticTypes3);
 	}
 
-	TermWithSource apply(final TermWithSource tws,
-			final Matcher parenthesesMatcher, final Set<String> toRemove) {
+	TermWithSource apply(final TermWithSource tws, final Matcher parenthesesMatcher, final Set<String> toRemove) {
 		String term = tws.getTerm();
 		parenthesesMatcher.reset(term);
 
@@ -55,8 +48,7 @@ public class RewriteSemanticType extends Rule {
 			if (toRemove.contains(inParentheses)) {
 				term = term.replace(withParentheses, "");
 				term = multiWhitespaces.reset(term).replaceAll(" ").trim();
-				return new TermWithSource(term, tws.getLanguage(),
-						tws.getIsChem(), tws.getMdifiedByRulesList(), ruleName);
+				return new TermWithSource(term, tws.getLanguage(), tws.getIsChem(), tws.getMdifiedByRulesList(), ruleName);
 			}
 		}
 		return null;
@@ -66,20 +58,17 @@ public class RewriteSemanticType extends Rule {
 	public ArrayList<TermWithSource> applyOnOneTerm(final TermWithSource tws) {
 		final ArrayList<TermWithSource> out = new ArrayList<>();
 		if (tws.getTerm().contains(")")) {
-			final TermWithSource term = apply(tws, inRoundParenthesesMatcher,
-					toRemoveRound);
+			final TermWithSource term = apply(tws, inRoundParenthesesMatcher, toRemoveRound);
 			if (term != null)
 				out.add(term);
 		}
 		if (tws.getTerm().contains("]")) {
-			final TermWithSource term = apply(tws, inSquareParenthesesMatcher,
-					toRemoveSquare);
+			final TermWithSource term = apply(tws, inSquareParenthesesMatcher, toRemoveSquare);
 			if (term != null)
 				out.add(term);
 		}
 		if (tws.getTerm().contains(">")) {
-			final TermWithSource term = apply(tws, inAngularParenthesesMatcher,
-					toRemoveAngular);
+			final TermWithSource term = apply(tws, inAngularParenthesesMatcher, toRemoveAngular);
 			if (term != null)
 				out.add(term);
 		}

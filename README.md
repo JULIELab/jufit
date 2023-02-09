@@ -45,11 +45,11 @@ Please cite [JuFiT: A Configurable Rule Engine for Filtering and Generating New 
 {
   "pathToMRCONSO"  : "MRCONSO.RRF",
   "pathToMRSTY"    : "MRSTY.RRF",
-  "language"       : "JPN",
-  "SemanticTypes"  : ["T203", "T074"],
-  "SemanticGroups" : ["ANAT", "DISO"],
+  "language"       : "GER",
+  "SemanticTypes"  : [],
+  "SemanticGroups" : ["ANAT"],
   "applyFilters"   : "false",
-  "rulesFileName"  : "JuFiT_rules.json",
+  "rulesFileName"  : "resources_GER.json",
   "outputFormat"   : "grounded",
   "outFileName"    : "JuFiT_dictionary.txt"
 }
@@ -85,7 +85,7 @@ Please cite [JuFiT: A Configurable Rule Engine for Filtering and Generating New 
 ### Usage
 
 * Creating Jar-file by Maven:
-    * Command line: `mvn package
+    * Command line: `mvn package`
     * Eclipse: *Run Configurations* &rarr; *Maven Build* &rarr; *Goals* `assembly:single`
 * Open a command line and type on the same line `java -jar <JuFiT-file.jar> jufit_config.json`
 * We suggest updating your Java VM arguments to use at least 0.5GB of RAM, i.e., `-Xmx512M`

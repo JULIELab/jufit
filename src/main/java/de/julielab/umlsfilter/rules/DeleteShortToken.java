@@ -55,9 +55,7 @@ public class DeleteShortToken extends Rule {
 		final String[] tokens = tws.getTerm().split("\\P{L}");
 		boolean keep = false;
 		for (final String token : tokens)
-			if (twoOrMoreLetters.reset(token).matches()
-					&& !romanNumeral.reset(token).matches()
-					&& !stopWords.contains(token.toLowerCase())) {
+			if (twoOrMoreLetters.reset(token).matches() && !romanNumeral.reset(token).matches() && !stopWords.contains(token.toLowerCase())) {
 				keep = true;
 				break;
 			}

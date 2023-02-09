@@ -24,11 +24,8 @@ public class RewriteShortFormLongForm extends Rule {
 		int start = 0;
 		int found = container.indexOf(contained, start);
 		while (found != -1) {
-			if (((found == 0)
-					|| !Character.isLetterOrDigit(container.charAt(found - 1)))
-					&& ((container.length() == (found + contained.length()))
-							|| !Character.isLetterOrDigit(container
-									.charAt(found + contained.length()))))
+			if (((found == 0) || !Character.isLetterOrDigit(container.charAt(found - 1))) && ((container.length() == (found + contained.length()))
+							|| !Character.isLetterOrDigit(container.charAt(found + contained.length()))))
 				return true;
 			start = found + contained.length();
 			found = container.indexOf(contained, start);
@@ -67,19 +64,15 @@ public class RewriteShortFormLongForm extends Rule {
 			 * decrement longFormIndex until a matching character is found at
 			 * the beginning of a word in the long form.
 			 */
-			while (((longFormIndex >= 0) && (Character
-					.toLowerCase(longForm.charAt(longFormIndex)) != currChar))
+			while (((longFormIndex >= 0) && (Character.toLowerCase(longForm.charAt(longFormIndex)) != currChar))
 					|| ((shortFormIndex == 0) && (longFormIndex > 0)
-							&& (Character.isLetterOrDigit(
-									longForm.charAt(longFormIndex - 1)))))
+					&& (Character.isLetterOrDigit(longForm.charAt(longFormIndex - 1)))))
 				--longFormIndex;
 
-			while ((longFormIndex > 0) && (shortFormIndex == 0)
-					&& !(longForm.charAt(longFormIndex - 1) == ' '))
+			while ((longFormIndex > 0) && (shortFormIndex == 0) && !(longForm.charAt(longFormIndex - 1) == ' '))
 				--longFormIndex;
 
-			if ((shortFormIndex == 0) && (longFormIndex == 0) && (Character
-					.toLowerCase(longForm.charAt(longFormIndex)) != currChar))
+			if ((shortFormIndex == 0) && (longFormIndex == 0) && (Character.toLowerCase(longForm.charAt(longFormIndex)) != currChar))
 				return null;
 			// If no match was found in the long form for the current
 			// character, return null (no match).
@@ -118,15 +111,11 @@ public class RewriteShortFormLongForm extends Rule {
 		return false;
 	}
 
-	private final Matcher noParaMatcher = Pattern.compile("\\(.*\\)")
-			.matcher("");
+	private final Matcher noParaMatcher = Pattern.compile("\\(.*\\)").matcher("");
 
 	private final Matcher letterMatcher = Pattern.compile("\\p{L}").matcher("");
 
-	private final Matcher paraMatcherWithNames = Pattern
-			.compile(IN_PARENTHESES_TEMPLATE.replace("OPENPAR", "(")
-					.replace("CLOSEPAR", ")"))
-			.matcher("");
+	private final Matcher paraMatcherWithNames = Pattern.compile(IN_PARENTHESES_TEMPLATE.replace("OPENPAR", "(").replace("CLOSEPAR", ")")).matcher("");
 
 	private final boolean destructive;
 
@@ -137,11 +126,9 @@ public class RewriteShortFormLongForm extends Rule {
 
 	public RewriteShortFormLongForm(final Map<String, String[]> parameters) {
 		super(RULENAME);
-		if (!parameters.containsKey(PARAMETER_DESTRUCTIVE)
-				|| (parameters.get(PARAMETER_DESTRUCTIVE).length != 1))
+		if (!parameters.containsKey(PARAMETER_DESTRUCTIVE) || (parameters.get(PARAMETER_DESTRUCTIVE).length != 1))
 			throw new IllegalArgumentException();
-		destructive = Boolean
-				.parseBoolean(parameters.get(PARAMETER_DESTRUCTIVE)[0]);
+		destructive = Boolean.parseBoolean(parameters.get(PARAMETER_DESTRUCTIVE)[0]);
 	}
 
 	@Override
@@ -150,8 +137,7 @@ public class RewriteShortFormLongForm extends Rule {
 		final String s = tws.getTerm();
 		final String parenthesesContent = getParenthesesContent(s);
 		if (parenthesesContent != null) {
-			final String withoutParenthesesAndTheirContent = noParaMatcher
-					.reset(s).replaceAll("").trim();
+			final String withoutParenthesesAndTheirContent = noParaMatcher.reset(s).replaceAll("").trim();
 
 			if (Rule.countWords(parenthesesContent) > 2) {
 				// Parentheses contain possible long form, now searching for
@@ -160,55 +146,39 @@ public class RewriteShortFormLongForm extends Rule {
 						withoutParenthesesAndTheirContent);
 				final ArrayList<String> possibleLongForms = new ArrayList<>();
 				for (final String z : possibleShortForms)
-					if (Rule.countWords(parenthesesContent) <= Math
-							.min(z.length() + 5, z.length() * 2))
-						possibleLongForms.add(RewriteShortFormLongForm
-								.findBestLongForm(z, parenthesesContent));
+					if (Rule.countWords(parenthesesContent) <= Math.min(z.length() + 5, z.length() * 2))
+						possibleLongForms.add(RewriteShortFormLongForm.findBestLongForm(z, parenthesesContent));
 
 				// exactly one short/long form found -> return
-				if ((possibleLongForms.size() == 1)
-						&& (possibleLongForms.get(0) != null)) {
+				if ((possibleLongForms.size() == 1) && (possibleLongForms.get(0) != null)) {
 					final String shortForm = withoutParenthesesAndTheirContent;
 					final String longForm = possibleLongForms.get(0);
 					if (longAndShortFormCompatible(longForm, shortForm)) {
 						out = new ArrayList<>();
-						out.add(new TermWithSource(shortForm, tws.getLanguage(),
-								tws.getIsChem(), tws.getMdifiedByRulesList(),
-								ruleName));
-						out.add(new TermWithSource(longForm, tws.getLanguage(),
-								tws.getIsChem(), tws.getMdifiedByRulesList(),
-								ruleName));
+						out.add(new TermWithSource(shortForm, tws.getLanguage(), tws.getIsChem(), tws.getMdifiedByRulesList(), ruleName));
+						out.add(new TermWithSource(longForm, tws.getLanguage(), tws.getIsChem(), tws.getMdifiedByRulesList(), ruleName));
 						if (destructive)
 							tws.supress();
 						return out;
 					}
 				}
-			} else if (meetShortFormConstrains(parenthesesContent)
-					&& s.endsWith(parenthesesContent + ")") // TODO change if
+			} else if (meetShortFormConstrains(parenthesesContent) && s.endsWith(parenthesesContent + ")")
+					// TODO change if
 					// other parentheses
 					// supported
-					&& (Rule.countWords(
-							withoutParenthesesAndTheirContent) <= Math.min(
-									parenthesesContent.length() + 5,
-									parenthesesContent.length() * 2))) {
+					&& (Rule.countWords(withoutParenthesesAndTheirContent) <= Math.min(parenthesesContent.length() + 5, parenthesesContent.length() * 2))) {
 				/*
 				 * tests if substring outside of parenthesis is short enough to
 				 * be long from, ALTERNATIVE: if possible long form is too long,
 				 * reduce length until it meets length constrain
 				 */
-				final String longForm = RewriteShortFormLongForm
-						.findBestLongForm(parenthesesContent,
-								withoutParenthesesAndTheirContent);
+				final String longForm = RewriteShortFormLongForm.findBestLongForm(parenthesesContent, withoutParenthesesAndTheirContent);
 				if (longForm != null) {
 					final String shortForm = parenthesesContent;
 					if (longAndShortFormCompatible(longForm, shortForm)) {
 						out = new ArrayList<>();
-						out.add(new TermWithSource(shortForm, tws.getLanguage(),
-								tws.getIsChem(), tws.getMdifiedByRulesList(),
-								ruleName));
-						out.add(new TermWithSource(longForm, tws.getLanguage(),
-								tws.getIsChem(), tws.getMdifiedByRulesList(),
-								ruleName));
+						out.add(new TermWithSource(shortForm, tws.getLanguage(), tws.getIsChem(), tws.getMdifiedByRulesList(), ruleName));
+						out.add(new TermWithSource(longForm, tws.getLanguage(), tws.getIsChem(), tws.getMdifiedByRulesList(), ruleName));
 						if (destructive)
 							tws.supress();
 						return out;

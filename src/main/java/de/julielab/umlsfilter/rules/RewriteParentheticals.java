@@ -27,8 +27,7 @@ public class RewriteParentheticals extends Rule {
 
 	RewriteParentheticals() throws IOException {
 		super(RULENAME);
-		matcher = prepareMatcher(
-				ResourceProvider.getLanguageIndependentParentheticals());
+		matcher = prepareMatcher(ResourceProvider.getLanguageIndependentParentheticals());
 	}
 
 	public RewriteParentheticals(final Map<String, String[]> parameters)
@@ -36,8 +35,7 @@ public class RewriteParentheticals extends Rule {
 		this();
 	}
 
-	protected RewriteParentheticals(final String ruleName,
-			final String parentheticals) throws IOException {
+	protected RewriteParentheticals(final String ruleName, final String parentheticals) throws IOException {
 		super(ruleName);
 		matcher = prepareMatcher(parentheticals);
 	}
@@ -51,9 +49,7 @@ public class RewriteParentheticals extends Rule {
 			term = term.trim();
 			if (!term.equals(tws.getTerm())) {
 				out = new ArrayList<>();
-				out.add(new TermWithSource(term, tws.getLanguage(),
-						tws.getIsChem(), tws.getMdifiedByRulesList(),
-						ruleName));
+				out.add(new TermWithSource(term, tws.getLanguage(), tws.getIsChem(), tws.getMdifiedByRulesList(), ruleName));
 			}
 		}
 		return out;

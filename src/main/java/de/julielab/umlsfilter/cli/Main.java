@@ -29,7 +29,7 @@ import de.julielab.umlsfilter.delemmatizer.OutputFormat;
 
 public class Main
 {
-	public static final String VERSION = "1.2";
+	public static final String VERSION = "1.3";
 
 	@SuppressWarnings({ "unchecked", "null" })
 	public static void main(final String[] args) throws IOException 
@@ -41,7 +41,7 @@ public class Main
 		System.out.println("READING input pararmeters from " + jsonFile);
 
 		final String pathToMRCONSO = jufitProperties.getPathToMRCONSO();
-		if (new File(pathToMRCONSO).exists()) 
+		if (new File(pathToMRCONSO).exists())
 		{
 			System.out.println("path to MRCONSO file: " + pathToMRCONSO);
 		}
@@ -69,7 +69,7 @@ public class Main
 		}
 		else
 		{
-			System.err.println("Define a language. JuFiT is aborted.");
+			System.err.println("Define a language.  JuFiT is aborted.");
 			System.exit(1);
 		}
 
@@ -152,16 +152,24 @@ public class Main
 			throw new IllegalArgumentException("No valid output format selected!");
 		}
 
+		final boolean applyFilters = jufitProperties.getApplyFilters();
+		System.out.println("applyFilters:         " + applyFilters);
+
+		final String jsonRulesFile = jufitProperties.getRulesFileName();
+		if ((new File(jsonRulesFile).exists()))
+		{
+			System.out.println("jsonRulesFile:        " + jsonRulesFile);
+		}
+		else
+		{
+			System.err.println("path to json Rules File: " + jsonRulesFile + " is wrong.  JuFiT is aborted.");
+			System.exit(1);
+		}
+
 		System.out.println("output format:        " + outputFormat);
 
 		final String outFileName            = jufitProperties.getOutFileName();
 		System.out.println("path to output file:  " + outFileName);
-
-		final boolean applyFilters = jufitProperties.getApplyFilters();
-		System.out.println("getApplyFilters:  " + applyFilters);
-
-		final String jsonRulesFile = jufitProperties.getRulesFileName();
-		System.out.println("getRulesFileName " + jsonRulesFile);
 
 		if (!(outFileName.equals(null)))
 		{

@@ -32,8 +32,8 @@ public class DeleteLongTerm extends Rule {
 
 	@Override
 	public ArrayList<TermWithSource> applyOnOneTerm(final TermWithSource tws) {
-		if (((Rule.countWords(tws.getTerm())) > 5)
-				&& (tws.getIsChem() == false)) {
+		if (((Rule.countWords(tws.getTerm())) > 5) && (tws.getIsChem() == false))
+		{
 			tws.supress();
 			tws.addModifyingRule(ruleName);
 		}

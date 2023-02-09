@@ -39,8 +39,7 @@ public class RewriteApostropheS extends Rule {
 		if (apostropheS.find()) {
 			final String s2 = apostropheS.replaceAll("");
 			out = new ArrayList<>();
-			out.add(new TermWithSource(s2, tws.getLanguage(), tws.getIsChem(),
-					tws.getMdifiedByRulesList(), ruleName));
+			out.add(new TermWithSource(s2, tws.getLanguage(), tws.getIsChem(), tws.getMdifiedByRulesList(), ruleName));
 		}
 		return out;
 	}

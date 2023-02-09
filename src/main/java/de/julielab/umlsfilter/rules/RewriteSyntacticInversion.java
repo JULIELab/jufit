@@ -25,15 +25,10 @@ public class RewriteSyntacticInversion extends Rule {
 	private static final Joiner SPACE_JOINER = Joiner.on(" ");
 	private static final Joiner DASH_JOINER = Joiner.on("-");
 	private static final String RULENAME = "SYN";
-	private final Matcher containsDash = Pattern.compile("\\P{Z}-\\p{Z}")
-			.matcher("");
-	private final Matcher upperThenLowerFirst = Pattern
-			.compile("^(.* )*\\p{Lu}\\p{javaLowerCase}\\p{javaLowerCase}+-$")
-			.matcher("");
-	private final Matcher upperThenLowerSecond = Pattern
-			.compile("^(.* )*\\p{Lu}\\p{Ll}\\p{Ll}\\p{Ll}+$").matcher("");
-	private final Matcher lowerDashLower = Pattern
-			.compile("^\\p{Ll}+-\\p{Ll}+-$").matcher("");
+	private final Matcher containsDash = Pattern.compile("\\P{Z}-\\p{Z}").matcher("");
+	private final Matcher upperThenLowerFirst = Pattern.compile("^(.* )*\\p{Lu}\\p{javaLowerCase}\\p{javaLowerCase}+-$").matcher("");
+	private final Matcher upperThenLowerSecond = Pattern.compile("^(.* )*\\p{Lu}\\p{Ll}\\p{Ll}\\p{Ll}+$").matcher("");
+	private final Matcher lowerDashLower = Pattern.compile("^\\p{Ll}+-\\p{Ll}+-$").matcher("");
 	private final Matcher doubleDash = Pattern.compile("-.*-").matcher("");
 
 	private final boolean compound;
@@ -80,29 +75,23 @@ public class RewriteSyntacticInversion extends Rule {
 				else if (!doubleDash.reset(strings[0]).find()
 						&& upperThenLowerFirst.reset(strings[0]).matches()
 						&& upperThenLowerSecond.reset(strings[1]).matches())
-					s2 = strings[0].substring(0, strings[0].length() - 1)
-							+ strings[1].toLowerCase();
+					s2 = strings[0].substring(0, strings[0].length() - 1) + strings[1].toLowerCase();
 				else if (!tws.getIsChem()
 						&& lowerDashLower.reset(strings[0]).matches()
 						&& upperThenLowerSecond.reset(strings[1]).matches()) {
-					final String[] splits2 = strings[0]
-							.substring(0, strings[0].length() - 1).split("-");
+					final String[] splits2 = strings[0].substring(0, strings[0].length() - 1).split("-");
 					for (int i = 0; i < splits2.length; ++i)
-						splits2[i] = Character.toUpperCase(splits2[i].charAt(0))
-								+ splits2[i].substring(1, splits2[i].length());
+						splits2[i] = Character.toUpperCase(splits2[i].charAt(0)) + splits2[i].substring(1, splits2[i].length());
 					s2 = DASH_JOINER.join(splits2) + "-" + strings[1];
 				} else
 					s2 = s2.replaceAll("- +", "-");
 			if (!s1.equals(s2) && !s2.equals("")) {
 				out = new ArrayList<>();
-				out.add(new TermWithSource(s2, tws.getLanguage(),
-						tws.getIsChem(), tws.getMdifiedByRulesList(),
-						ruleName));
+				out.add(new TermWithSource(s2, tws.getLanguage(), tws.getIsChem(), tws.getMdifiedByRulesList(), ruleName));
 			}
 		}
 		if ((out != null) && destructive)
 			tws.supress();
 		return out;
 	}
-
 }
