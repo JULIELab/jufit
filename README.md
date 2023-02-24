@@ -11,22 +11,6 @@ This is the **Jena UMLS Filter Tool (JuFiT)**, a rule-based open-source tool to 
 * 1.2 More request options by definitions of Semantic Types and Semantic Groups derived from [https://metamap.nlm.nih.gov/Docs/SemGroups_2018.txt](https://metamap.nlm.nih.gov/Docs/SemGroups_2018.txt)
 * 1.3 Updates of including packages, Json based configuration for input and Python based wrapper.
 
-
-### Citation
-Please cite [JuFiT: A Configurable Rule Engine for Filtering and Generating New Multilingual UMLS Terms](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4765630/) when using JuFiT in your research ([PMID: 26958195](https://pubmed.ncbi.nlm.nih.gov/26958195/)) ([PMCID: PMC4765630](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4765630/)).
-
-```
-@inproceedings{hellrich2015jufit,
-  title={JuFiT: A configurable rule engine for filtering and generating new multilingual UMLS terms},
-  author={Hellrich, Johannes and Schulz, Stefan and Buechel, Sven and Hahn, Udo},
-  booktitle={AMIA Annual Symposium Proceedings},
-  volume={2015},
-  pages={604},
-  year={2015},
-  organization={American Medical Informatics Association}
-}
-```
-
 ## Note before usage
 
 ### Input and prerequisites
@@ -59,28 +43,39 @@ Please cite [JuFiT: A Configurable Rule Engine for Filtering and Generating New 
   * For detailed definitions look into [https://metamap.nlm.nih.gov/Docs/SemGroups_2018.txt](https://metamap.nlm.nih.gov/Docs/SemGroups_2018.txt)
   * If the definitions of `SemanticTypes` and `SemanticGroups` are empty all definitions of `SemanticTypes` and `SemanticGroups` will be processed, hence the whole vocabulary of a language.
   * If the definition of `language` is empty, the routine is aborted.
-  * Languages must be given as three letter abbreviations, e.g.:
-      * `BAQ` (Basque)
-      * `CZE` (Czech)
-      * `DAN` (Danish)
-      * `DUT` (Dutch)
-      * `ENG` (English)
-      * `FIN` (Finnish)
-      * `FRE` (French)
-      * `GER` (German)
-      * `HEB` (Hebrew)
-      * `HUN` (Hungarian)
-      * `ITA` (Italian)
-      * `JPN` (Japanese)
-      * `KOR` (Korean)
-      * `LAV` (Latvian)
-      * `NOR` (Norwegian)
-      * `POL` (Polish)
-      * `POR` (Portuguese)
-      * `RUS` (Russian)
-      * `SCR` (Croatian)
-      * `SPA` (Spanish)
-      * `SWE` (Swedish)
+* Languages must be given as three letter abbreviations, e.g.:
+  * `BAQ` (Basque)
+  * `CZE` (Czech)
+  * `DAN` (Danish)
+  * `DUT` (Dutch)
+  * `ENG` (English)
+  * `FIN` (Finnish)
+  * `FRE` (French)
+  * `GER` (German)
+  * `HEB` (Hebrew)
+  * `HUN` (Hungarian)
+  * `ITA` (Italian)
+  * `JPN` (Japanese)
+  * `KOR` (Korean)
+  * `LAV` (Latvian)
+  * `NOR` (Norwegian)
+  * `POL` (Polish)
+  * `POR` (Portuguese)
+  * `RUS` (Russian)
+  * `SCR` (Croatian)
+  * `SPA` (Spanish)
+  * `SWE` (Swedish)
+* Output formats:
+  * `gounded`
+    * result in format of the following order: Unique identifier for concept (CUI), | as delimiter, word form entry per line
+  * `mrconso`
+    * result in format *mrconso*, for details look into the [documentation of NCBI](https://www.ncbi.nlm.nih.gov/books/NBK9685/table/ch03.T.concept_names_and_sources_file_mr/)
+    * only useable, if a filter rule file is defined, examples under [src/main/resources](src/main/resources)
+  * `terms`
+    * a list of word forms of all resulted entries without more information
+  * `complex`
+    * providing applied rules, also writes removed terms to stderr
+    * result in format of the following order: term, UMLS@@, Unique identifier for concept (CUI), rule
 
 ### Usage
 
@@ -92,4 +87,25 @@ Please cite [JuFiT: A Configurable Rule Engine for Filtering and Generating New 
 * More information on the UMLS can be found in the [UMLS® Reference Manual](https://www.ncbi.nlm.nih.gov/books/NBK9676/).
 
 
+### Citation
+
+## Scientific publication
+
+Please cite [JuFiT: A Configurable Rule Engine for Filtering and Generating New Multilingual UMLS Terms](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4765630/) when using JuFiT in your research ([PMID: 26958195](https://pubmed.ncbi.nlm.nih.gov/26958195/)) ([PMCID: PMC4765630](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4765630/)).
+
+```
+@inproceedings{hellrich2015jufit,
+  title={JuFiT: A configurable rule engine for filtering and generating new multilingual UMLS terms},
+  author={Hellrich, Johannes and Schulz, Stefan and Buechel, Sven and Hahn, Udo},
+  booktitle={AMIA Annual Symposium Proceedings},
+  volume={2015},
+  pages={604},
+  year={2015},
+  organization={American Medical Informatics Association}
+}
+```
+
+## Code
+
+* Version 1.3: Johannes Hellrich, Christina Lohr, Benjamin, Erik Fäßler, & Elena Grygorova. (2022). JULIELab/jufit: Zenodo Release (v1.3). Zenodo. https://doi.org/10.5281/zenodo.7442589
 

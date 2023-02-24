@@ -83,12 +83,11 @@ public class Delemmatizer {
 			if (OutputFormat.MRCONSO == outputFormat)
 			{
 				if (!applyFilters){
-					throw new IllegalArgumentException();
+					System.exit(1);
+					//throw new IllegalArgumentException();
 				}
 				
 				for (final TermWithSource term : cleanedTerms.getRawTerms()){
-					System.out.println("term.getTerm() " + term.getTerm());
-					
 					if (!term.getIsSupressed()){
 						if (term.getModifiedByRulesString().equals("")){
 							System.out.println(providedTerm.getOriginalMRCONSO());
